@@ -19,7 +19,6 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW_DATA_DIR = ROOT / "raw_data"
 PHENO_DIR = ROOT / "configs" / "phenotypes"
 DEFAULT_REPORT_FILE = ROOT / "app" / "default_report" / "manuscript_report.html"
-REQUIRED_RAW_FILES = ("phenotype.tsv", "static_features.tsv")
 DEFAULT_BASE_URL = "https://physionet.org/files/b2ai-voice/3.0.0/"
 PIPELINE_STAGE_HINTS: list[tuple[str, str, int]] = [
     ("scripts/01_prepare_dataset.py", "Stage 1/7: preparing dataset", 8),
@@ -84,11 +83,32 @@ def _report_is_for_phenotype(report_file: Path, phenotype: str) -> bool:
     return True
 
 
+def _has_static_source_table() -> bool:
+    if (RAW_DATA_DIR / "static_features.tsv").exists():
+        return True
+    for path in RAW_DATA_DIR.rglob("*.tsv"):
+        name = path.name.lower()
+        if "static" in name and "feature" in name:
+            return True
+    return False
+
+
+def _has_phenotype_source_table() -> bool:
+    if (RAW_DATA_DIR / "phenotype.tsv").exists():
+        return True
+    for path in RAW_DATA_DIR.rglob("*.tsv"):
+        parts = [part.lower() for part in path.parts]
+        if "phenotype" in parts:
+            return True
+    return False
+
+
 def _missing_required_raw_files() -> list[str]:
     missing: list[str] = []
-    for name in REQUIRED_RAW_FILES:
-        if not (RAW_DATA_DIR / name).exists():
-            missing.append(str(RAW_DATA_DIR / name))
+    if not _has_phenotype_source_table():
+        missing.append("phenotype TSV(s) under raw_data/**/phenotype/")
+    if not _has_static_source_table():
+        missing.append("static_features TSV")
     return missing
 
 
@@ -171,6 +191,19 @@ def _normalize_static_files() -> None:
                 matches = [p for p in all_tsv if pat.search(p.name)]
                 if matches:
                     break
+        if not matches and name == "phenotype.tsv":
+            matches = [
+                p
+                for p in all_tsv
+                if "phenotype" in [part.lower() for part in p.parts]
+            ]
+            matches.sort(
+                key=lambda p: (
+                    0 if "diagnosis" in [part.lower() for part in p.parts] else 1,
+                    len(p.parts),
+                    len(str(p)),
+                )
+            )
         if not matches:
             continue
         matches.sort(key=lambda p: (len(p.parts), len(str(p))))

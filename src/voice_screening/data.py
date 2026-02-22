@@ -33,18 +33,137 @@ def _normalize_str_series(series: pd.Series) -> pd.Series:
     return series.astype(str).str.strip().str.lower()
 
 
+def _read_tsv(path: Path) -> pd.DataFrame:
+    return pd.read_csv(path, sep="\t", low_memory=False)
+
+
+def _discover_phenotype_tsvs(data_root: Path) -> list[Path]:
+    files = []
+    for path in data_root.rglob("*.tsv"):
+        parts = [part.lower() for part in path.parts]
+        if "phenotype" in parts:
+            files.append(path)
+    return sorted(files)
+
+
+def _phenotype_has_label_sources(df: pd.DataFrame, config: dict[str, Any]) -> bool:
+    participant_col = config["columns"]["participant_id"]
+    if participant_col not in df.columns:
+        return False
+
+    label_cfg = config["labeling"]
+    has_positive = _match_column(df.columns.tolist(), label_cfg["positive_column_candidates"]) is not None
+    has_control = _match_column(df.columns.tolist(), label_cfg["control_column_candidates"]) is not None
+    return has_positive and has_control
+
+
+def _merge_phenotype_tables(files: list[Path], config: dict[str, Any]) -> pd.DataFrame | None:
+    participant_col = config["columns"]["participant_id"]
+    session_col = config["columns"]["session_id"]
+    loaded: list[tuple[Path, pd.DataFrame]] = []
+
+    for path in files:
+        try:
+            df = _read_tsv(path)
+        except Exception:
+            continue
+        if participant_col in df.columns:
+            loaded.append((path, df))
+
+    if not loaded:
+        return None
+
+    def _score(path: Path) -> tuple[int, int, int, int]:
+        parts = [part.lower() for part in path.parts]
+        return (
+            0 if path.name.lower() == "phenotype.tsv" else 1,
+            0 if "diagnosis" in parts else 1,
+            0 if "enrollment" in parts else 1,
+            len(parts),
+        )
+
+    loaded.sort(key=lambda item: _score(item[0]))
+    merged = loaded[0][1].copy()
+
+    for _, df in loaded[1:]:
+        merge_keys = [participant_col]
+        if session_col in merged.columns and session_col in df.columns:
+            merge_keys.append(session_col)
+
+        merged = merged.merge(df, on=merge_keys, how="outer", suffixes=("", "__dup"))
+
+        dup_cols = [col for col in merged.columns if col.endswith("__dup")]
+        for dup in dup_cols:
+            base = dup[:-5]
+            if base in merged.columns:
+                merged[base] = merged[base].where(merged[base].notna(), merged[dup])
+                merged = merged.drop(columns=[dup])
+            else:
+                merged = merged.rename(columns={dup: base})
+
+    return merged
+
+
+def _discover_static_tsv(data_root: Path, preferred_name: str) -> Path | None:
+    candidates = list(data_root.rglob("*.tsv"))
+    if not candidates:
+        return None
+
+    preferred = preferred_name.lower()
+
+    def _score(path: Path) -> tuple[int, int]:
+        name = path.name.lower()
+        parts = [part.lower() for part in path.parts]
+
+        if name == preferred:
+            rank = 0
+        elif "static" in name and "feature" in name:
+            rank = 1
+        elif "features" in parts:
+            rank = 2
+        else:
+            rank = 9
+        return rank, len(parts)
+
+    ranked = sorted(candidates, key=_score)
+    if _score(ranked[0])[0] >= 9:
+        return None
+    return ranked[0]
+
+
 def load_raw_tables(config: dict[str, Any]) -> tuple[pd.DataFrame, pd.DataFrame]:
     data_root = Path(config["paths"]["data_root"])
     phenotype_file = data_root / config["files"]["phenotype_tsv"]
     static_file = data_root / config["files"]["static_features_tsv"]
 
-    if not phenotype_file.exists():
-        raise FileNotFoundError(f"Missing phenotype file: {phenotype_file}")
-    if not static_file.exists():
-        raise FileNotFoundError(f"Missing static feature file: {static_file}")
+    phenotype_df: pd.DataFrame | None = None
+    if phenotype_file.exists():
+        phenotype_df = _read_tsv(phenotype_file)
 
-    phenotype_df = pd.read_csv(phenotype_file, sep="\t", low_memory=False)
-    static_df = pd.read_csv(static_file, sep="\t", low_memory=False)
+    if phenotype_df is None or not _phenotype_has_label_sources(phenotype_df, config):
+        phenotype_candidates = _discover_phenotype_tsvs(data_root)
+        if phenotype_candidates:
+            merged = _merge_phenotype_tables(phenotype_candidates, config)
+            if merged is not None:
+                phenotype_df = merged
+
+    if phenotype_df is None:
+        raise FileNotFoundError(
+            f"Missing phenotype file: {phenotype_file}. "
+            f"No usable phenotype TSV files were discovered under: {data_root}"
+        )
+
+    static_path = static_file
+    if not static_path.exists():
+        discovered_static = _discover_static_tsv(data_root, static_file.name)
+        if discovered_static is None:
+            raise FileNotFoundError(
+                f"Missing static feature file: {static_file}. "
+                f"No usable static-feature TSV was discovered under: {data_root}"
+            )
+        static_path = discovered_static
+
+    static_df = _read_tsv(static_path)
     return phenotype_df, static_df
 
 
