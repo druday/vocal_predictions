@@ -150,8 +150,27 @@ def _run_command(
 
 def _normalize_static_files() -> None:
     RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    for name in ["phenotype.tsv", "static_features.tsv"]:
-        matches = [p for p in RAW_DATA_DIR.rglob(name) if p.is_file()]
+    target_candidates: dict[str, list[re.Pattern[str]]] = {
+        "phenotype.tsv": [
+            re.compile(r"^phenotype\.tsv$", re.IGNORECASE),
+            re.compile(r"phenotype.*\.tsv$", re.IGNORECASE),
+        ],
+        "static_features.tsv": [
+            re.compile(r"^static_features\.tsv$", re.IGNORECASE),
+            re.compile(r"static.*features?.*\.tsv$", re.IGNORECASE),
+        ],
+    }
+
+    all_tsv = [p for p in RAW_DATA_DIR.rglob("*.tsv") if p.is_file()]
+
+    for name, patterns in target_candidates.items():
+        exact = [p for p in all_tsv if p.name == name]
+        matches = exact
+        if not matches:
+            for pat in patterns:
+                matches = [p for p in all_tsv if pat.search(p.name)]
+                if matches:
+                    break
         if not matches:
             continue
         matches.sort(key=lambda p: (len(p.parts), len(str(p))))
@@ -194,6 +213,16 @@ def _download_static_files(
     if rc != 0:
         return False, logs
     _normalize_static_files()
+    missing = _missing_required_raw_files()
+    if missing:
+        found_tsv = sorted(str(p) for p in RAW_DATA_DIR.rglob("*.tsv") if p.is_file())
+        debug = (
+            "\nExpected required files were not found after download:\n"
+            + "\n".join(missing)
+            + "\n\nTSV files discovered under raw_data:\n"
+            + ("\n".join(found_tsv) if found_tsv else "(none)")
+        )
+        return False, logs + debug
     return True, logs
 
 

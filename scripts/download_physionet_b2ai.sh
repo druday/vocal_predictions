@@ -91,6 +91,6 @@ echo "Downloading static-only files from: $BASE_URL"
 wget \
   "${WGET_AUTH[@]}" \
   "${WGET_COMMON[@]}" \
-  --accept-regex '.*(phenotype\.tsv|static_features\.tsv)$' \
+  --accept-regex '.*(phenotype/|features/|phenotype[^/]*\.tsv|static[^/]*features[^/]*\.tsv)$' \
   --reject-regex '.*(mfcc|spectrogram).*' \
   "$BASE_URL"
