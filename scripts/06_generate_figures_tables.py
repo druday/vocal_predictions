@@ -185,6 +185,18 @@ def _split_config(config: dict) -> tuple[float, float]:
     return test_fraction, validation_fraction
 
 
+def _split_balance_trials(config: dict) -> int:
+    split_cfg = config.get("modeling", {}).get("split", {})
+    balance_cfg = split_cfg.get("balance", {})
+    if isinstance(balance_cfg, dict):
+        enabled = bool(balance_cfg.get("enabled", True))
+        trials = int(balance_cfg.get("trials", 64))
+    else:
+        enabled = bool(balance_cfg) if balance_cfg is not None else True
+        trials = 64
+    return max(1, trials if enabled else 1)
+
+
 def _ordered_model_displays(config: dict, available_model_displays: list[str]) -> list[str]:
     available = [str(v) for v in available_model_displays if str(v)]
     if not available:
@@ -273,12 +285,14 @@ def _prepared_context(config: dict, run_dirs) -> dict[str, Any]:
     participant_ids = df[participant_col].astype(str).to_numpy()
 
     test_fraction, validation_fraction = _split_config(config)
+    balance_trials = _split_balance_trials(config)
     split = participant_train_val_test_split(
         participant_ids=participant_ids,
         labels=labels,
         test_size=test_fraction,
         validation_size_from_train_val=validation_fraction,
         random_seed=seed,
+        balance_trials=balance_trials,
     )
 
     x_train_raw = x_clean.loc[split.train_mask].to_numpy(dtype=np.float32)

@@ -272,6 +272,64 @@ def _collapsible(title: str, body_html: str, *, open_by_default: bool = False) -
     )
 
 
+def _resolve_named_class_counts(
+    dataset_summary: dict[str, Any],
+    *,
+    default_positive_name: str = "positive",
+    default_negative_name: str = "control",
+) -> tuple[str, str, int, int, int | None, int | None]:
+    positive_name = str(dataset_summary.get("positive_class_name", default_positive_name))
+    negative_name = str(dataset_summary.get("negative_class_name", default_negative_name))
+
+    class_counts = dataset_summary.get("class_counts", {})
+    participant_counts = dataset_summary.get("participant_class_counts", {})
+    class_counts_named = dataset_summary.get("class_counts_named", {})
+    participant_counts_named = dataset_summary.get("participant_class_counts_named", {})
+
+    def _safe_int(value: Any) -> int | None:
+        if value is None:
+            return None
+        if isinstance(value, (float, np.floating)) and np.isnan(value):
+            return None
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    rec_positive = _safe_int(class_counts_named.get(positive_name, class_counts.get("1")))
+    rec_negative = _safe_int(class_counts_named.get(negative_name, class_counts.get("0")))
+    pid_positive = _safe_int(participant_counts_named.get(positive_name, participant_counts.get("1")))
+    pid_negative = _safe_int(participant_counts_named.get(negative_name, participant_counts.get("0")))
+    rec_positive = 0 if rec_positive is None else rec_positive
+    rec_negative = 0 if rec_negative is None else rec_negative
+    return positive_name, negative_name, rec_positive, rec_negative, pid_positive, pid_negative
+
+
+def _split_balance_rows(split_summary: dict[str, Any], level_name: str) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    balance = split_summary.get("class_balance", {})
+    split_payload = balance.get("splits", {})
+    for split_name in ("train", "val", "test"):
+        split_data = split_payload.get(split_name, {})
+        rec = split_data.get("recordings", {})
+        pid = split_data.get("participants", {})
+        if not rec and not pid:
+            continue
+        rows.append(
+            {
+                "level": level_name,
+                "split": split_name,
+                "participant_positive": pid.get("n_positive"),
+                "participant_negative": pid.get("n_negative"),
+                "participant_positive_rate": pid.get("positive_rate"),
+                "recording_positive": rec.get("n_positive"),
+                "recording_negative": rec.get("n_negative"),
+                "recording_positive_rate": rec.get("positive_rate"),
+            }
+        )
+    return rows
+
+
 def _top_hyperparam_keys(model_name: str) -> list[str]:
     if model_name in {"mlp", "residual_mlp", "wide_deep_mlp"}:
         return ["hidden_dims", "lr", "weight_decay", "dropout_rate", "epochs", "patience", "batch_size"]
@@ -678,6 +736,7 @@ def _table_with_links_for_manifest(manifest_df: pd.DataFrame) -> pd.DataFrame:
 
 def _build_findings(snapshot: dict[str, Any]) -> list[str]:
     findings: list[str] = []
+    dataset_summary = snapshot.get("dataset_summary", {})
     baseline_table = snapshot["baseline_table"]
     best_fine = snapshot["best_fine"]
     patient_ranked = snapshot["patient_ranked"]
@@ -687,6 +746,23 @@ def _build_findings(snapshot: dict[str, Any]) -> list[str]:
     patient_locked_selection = snapshot.get("patient_locked_selection", {})
     progressive_df = snapshot["progressive_summary"]
     cluster_profile_brief = snapshot.get("cluster_profile_brief", [])
+
+    pos_name, neg_name, rec_pos, rec_neg, pid_pos, pid_neg = _resolve_named_class_counts(
+        dataset_summary,
+        default_positive_name=str(snapshot.get("phenotype", "positive")),
+        default_negative_name="control",
+    )
+    if (rec_pos + rec_neg) > 0 and pid_pos is not None and pid_neg is not None:
+        findings.append(
+            "Cohort composition: "
+            f"{pos_name}={rec_pos} recordings / {pid_pos} participants, "
+            f"{neg_name}={rec_neg} recordings / {pid_neg} participants."
+        )
+    elif (rec_pos + rec_neg) > 0:
+        findings.append(
+            "Cohort composition: "
+            f"{pos_name}={rec_pos} recordings, {neg_name}={rec_neg} recordings."
+        )
 
     if not baseline_table.empty:
         top_baseline = baseline_table.sort_values(
@@ -718,6 +794,21 @@ def _build_findings(snapshot: dict[str, Any]) -> list[str]:
             f"(selected center K={k_selection.get('selected_k')}, "
             f"tuning split={k_selection.get('tuning_split', 'tuning')})."
         )
+
+    class_balance = snapshot.get("baseline_split", {}).get("class_balance", {})
+    split_payload = class_balance.get("splits", {})
+    if split_payload:
+        global_pid_rate = class_balance.get("overall", {}).get("participants", {}).get("positive_rate")
+        rates = []
+        for split_name in ("train", "val", "test"):
+            rate = split_payload.get(split_name, {}).get("participants", {}).get("positive_rate")
+            if rate is not None:
+                rates.append(float(rate))
+        if rates and global_pid_rate is not None:
+            max_dev = max(abs(float(rate) - float(global_pid_rate)) for rate in rates)
+            findings.append(
+                f"Participant-level class balance across splits: max positive-rate deviation={max_dev:.3f}."
+            )
 
     if locked_selection:
         override_k = locked_selection.get("lock_override_k")
@@ -927,6 +1018,30 @@ def build_html(snapshot: dict[str, Any], run_dirs) -> str:
     n_records = _format_scalar(dataset_summary.get("n_records"))
     n_participants = _format_scalar(dataset_summary.get("n_participants"))
     n_features = _format_scalar(dataset_summary.get("n_features"))
+    (
+        positive_name,
+        negative_name,
+        rec_positive_count,
+        rec_negative_count,
+        pid_positive_count,
+        pid_negative_count,
+    ) = _resolve_named_class_counts(
+        dataset_summary,
+        default_positive_name=str(snapshot.get("phenotype", "positive")),
+        default_negative_name="control",
+    )
+    baseline_balance = baseline_split.get("class_balance", {})
+    overall_pid_balance = baseline_balance.get("overall", {}).get("participants", {})
+    if pid_positive_count is None:
+        pid_positive_count = overall_pid_balance.get("n_positive")
+    if pid_negative_count is None:
+        pid_negative_count = overall_pid_balance.get("n_negative")
+    pid_positive_text = _format_scalar(pid_positive_count) if pid_positive_count is not None else "n/a"
+    pid_negative_text = _format_scalar(pid_negative_count) if pid_negative_count is not None else "n/a"
+    cohort_text = (
+        f"{positive_name}={_format_scalar(rec_positive_count)} recordings / {pid_positive_text} participants; "
+        f"{negative_name}={_format_scalar(rec_negative_count)} recordings / {pid_negative_text} participants."
+    )
     best_k = _format_scalar(best_fine.get("n_clusters"))
     best_cluster_auc = _format_scalar(_float_or_nan(best_fine.get("roc_auc")))
     analysis_mode = str(locked_selection.get("analysis_mode", "confirmatory"))
@@ -945,6 +1060,10 @@ def build_html(snapshot: dict[str, Any], run_dirs) -> str:
         ("Records", n_records),
         ("Participants", n_participants),
         ("Features", n_features),
+        (f"{positive_name.title()} Records", _format_scalar(rec_positive_count)),
+        (f"{negative_name.title()} Records", _format_scalar(rec_negative_count)),
+        (f"{positive_name.title()} Participants", pid_positive_text),
+        (f"{negative_name.title()} Participants", pid_negative_text),
         ("Best Clustered K", best_k),
         ("Best Recording ROC-AUC", best_cluster_auc),
         ("Best Patient ROC-AUC", patient_top_auc),
@@ -961,6 +1080,10 @@ def build_html(snapshot: dict[str, Any], run_dirs) -> str:
                 "n_records": dataset_summary.get("n_records"),
                 "n_participants": dataset_summary.get("n_participants"),
                 "n_features": dataset_summary.get("n_features"),
+                f"{positive_name}_records": rec_positive_count,
+                f"{negative_name}_records": rec_negative_count,
+                f"{positive_name}_participants": pid_positive_count,
+                f"{negative_name}_participants": pid_negative_count,
                 "selected_k": best_fine.get("n_clusters"),
                 "selected_model": best_fine.get("model_display", best_fine.get("model")),
             }
@@ -989,6 +1112,21 @@ def build_html(snapshot: dict[str, Any], run_dirs) -> str:
             },
         ]
     )
+
+    split_balance_rows = (
+        _split_balance_rows(baseline_split, "recording split")
+        + _split_balance_rows(cluster_split, "cluster split")
+    )
+    split_balance_df = pd.DataFrame(split_balance_rows)
+    if not split_balance_df.empty:
+        split_balance_df = split_balance_df.rename(
+            columns={
+                "participant_positive": f"participant_{positive_name}",
+                "participant_negative": f"participant_{negative_name}",
+                "recording_positive": f"recording_{positive_name}",
+                "recording_negative": f"recording_{negative_name}",
+            }
+        )
 
     backend_rows: list[pd.DataFrame] = []
     for stage_name, df in backends.items():
@@ -1091,6 +1229,7 @@ def build_html(snapshot: dict[str, Any], run_dirs) -> str:
     <div class="meta">
       <div><strong>Phenotype:</strong> {html.escape(snapshot["phenotype"])}</div>
       <div><strong>Run ID:</strong> {html.escape(snapshot["run_id"])}</div>
+      <div><strong>Cohort (case vs control):</strong> {html.escape(cohort_text)}</div>
       <div><strong>Generated (UTC):</strong> {html.escape(snapshot["generated_at_utc"])}</div>
       <div><strong>Repro command:</strong> <code>make pipeline PHENOTYPE={html.escape(snapshot["phenotype"])} RUN_ID={html.escape(snapshot["run_id"])}</code></div>
       <div><strong>Compile command:</strong> <code>make compile_html PHENOTYPE={html.escape(snapshot["phenotype"])} RUN_ID={html.escape(snapshot["run_id"])}</code></div>
@@ -1108,9 +1247,13 @@ def build_html(snapshot: dict[str, Any], run_dirs) -> str:
     {_figures_panel_html(run_dirs, ACOUSTIC_FIGURES)}
 
     <h2>Stage 1: Dataset Preparation</h2>
-    <p class="muted">Cohort and static acoustic feature matrix after phenotype-specific labeling and filtering.</p>
+    <p class="muted">
+      Cohort and static acoustic feature matrix after phenotype-specific labeling and filtering.
+      <strong>Case vs control counts:</strong> {html.escape(cohort_text)}
+    </p>
     {_collapsible("Dataset Summary Table", _df_to_html(pd.DataFrame([dataset_summary])))}
     {_collapsible("Split Summary Table", _df_to_html(split_rows))}
+    {_collapsible("Split Class-Balance Table", _df_to_html(split_balance_df))}
 
     <h2>Stage 2: Coarse Small-K Contenders</h2>
     <p class="muted">{html.escape(fine_context_text)}</p>

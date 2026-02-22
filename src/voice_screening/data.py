@@ -308,6 +308,29 @@ def merge_label_and_static(
 
 def select_feature_columns(merged_df: pd.DataFrame, config: dict[str, Any]) -> list[str]:
     exclude_cols = set(config["feature_selection"]["exclude_columns"])
+    labeling_cfg = config.get("labeling", {})
+
+    # Guard against label leakage if phenotype/control indicators survive the merge
+    # as numeric columns (e.g., in alternate data exports).
+    leakage_candidates = set()
+    for key in ("positive_column_candidates", "control_column_candidates"):
+        values = labeling_cfg.get(key, [])
+        if isinstance(values, str):
+            leakage_candidates.add(values)
+        elif isinstance(values, (list, tuple, set)):
+            leakage_candidates.update(str(v) for v in values)
+
+    for key in ("positive_class_name", "negative_class_name"):
+        value = labeling_cfg.get(key)
+        if value:
+            leakage_candidates.add(str(value))
+
+    if leakage_candidates:
+        lower_to_original = {str(col).lower(): str(col) for col in merged_df.columns}
+        for name in leakage_candidates:
+            actual = lower_to_original.get(str(name).lower())
+            if actual:
+                exclude_cols.add(actual)
 
     numeric_cols = merged_df.select_dtypes(include=[np.number]).columns.tolist()
     feature_cols = [c for c in numeric_cols if c not in exclude_cols]
@@ -341,17 +364,38 @@ def build_modeling_table(merged_df: pd.DataFrame, feature_cols: list[str], confi
 
 def dataset_summary(df: pd.DataFrame, feature_cols: list[str], config: dict[str, Any]) -> dict[str, Any]:
     participant_col = config["columns"]["participant_id"]
+    label_cfg = config.get("labeling", {})
+    positive_name = str(label_cfg.get("positive_class_name", "positive"))
+    negative_name = str(label_cfg.get("negative_class_name", "control"))
 
     n_records = int(len(df))
     n_participants = int(df[participant_col].nunique())
     class_counts = {str(k): int(v) for k, v in df["label"].value_counts().sort_index().items()}
+    participant_labels = df.groupby(participant_col)["label"].first().astype(int)
+    participant_class_counts = {
+        str(k): int(v) for k, v in participant_labels.value_counts().sort_index().items()
+    }
+
+    class_counts_named = {
+        positive_name: int(class_counts.get("1", 0)),
+        negative_name: int(class_counts.get("0", 0)),
+    }
+    participant_class_counts_named = {
+        positive_name: int(participant_class_counts.get("1", 0)),
+        negative_name: int(participant_class_counts.get("0", 0)),
+    }
 
     per_pid = df.groupby(participant_col).size()
     return {
         "n_records": n_records,
         "n_participants": n_participants,
         "n_features": int(len(feature_cols)),
+        "positive_class_name": positive_name,
+        "negative_class_name": negative_name,
         "class_counts": class_counts,
+        "class_counts_named": class_counts_named,
+        "participant_class_counts": participant_class_counts,
+        "participant_class_counts_named": participant_class_counts_named,
         "recordings_per_participant": {
             "min": float(per_pid.min()),
             "median": float(per_pid.median()),

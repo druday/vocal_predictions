@@ -52,6 +52,11 @@ modeling:
   split:
     test_fraction: 0.2
     validation_fraction: 0.2
+    # Deterministic stratified split search across multiple seeds to improve
+    # case/control balance consistency across train/val/test.
+    balance:
+      enabled: true
+      trials: 64
 
   threshold: 0.5
   metrics:

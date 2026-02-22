@@ -36,6 +36,7 @@ from voice_screening.notebook_parity import (  # noqa: E402
     fit_cluster_assignments,
     k_selection_payload,
     participant_train_val_test_split,
+    summarize_split_class_balance,
     standardize_and_clip,
 )
 from voice_screening.repro import update_run_manifest  # noqa: E402
@@ -80,6 +81,18 @@ def _split_config(config: dict) -> tuple[float, float]:
     test_fraction = float(split_cfg.get("test_fraction", 0.2))
     validation_fraction = float(split_cfg.get("validation_fraction", 0.2))
     return test_fraction, validation_fraction
+
+
+def _split_balance_trials(config: dict) -> int:
+    split_cfg = config.get("modeling", {}).get("split", {})
+    balance_cfg = split_cfg.get("balance", {})
+    if isinstance(balance_cfg, dict):
+        enabled = bool(balance_cfg.get("enabled", True))
+        trials = int(balance_cfg.get("trials", 64))
+    else:
+        enabled = bool(balance_cfg) if balance_cfg is not None else True
+        trials = 64
+    return max(1, trials if enabled else 1)
 
 
 def _cluster_aggregation_methods(config: dict) -> list[str]:
@@ -1102,12 +1115,14 @@ def main() -> None:
     participant_ids = df[participant_col].astype(str).to_numpy()
 
     test_fraction, validation_fraction = _split_config(config)
+    balance_trials = _split_balance_trials(config)
     split = participant_train_val_test_split(
         participant_ids=participant_ids,
         labels=labels,
         test_size=test_fraction,
         validation_size_from_train_val=validation_fraction,
         random_seed=seed,
+        balance_trials=balance_trials,
     )
 
     split_arrays = _single_split_arrays(
@@ -1576,6 +1591,17 @@ def main() -> None:
         "test_participants": int(len(split.test_participants)),
         "test_fraction": float(test_fraction),
         "validation_fraction_from_train_val": float(validation_fraction),
+        "split_seed": split.split_seed,
+        "split_balance_score": split.balance_score,
+        "split_balance_trials": int(split.balance_trials),
+        "class_balance": summarize_split_class_balance(
+            participant_ids=participant_ids,
+            labels=labels,
+            split=split,
+            positive_label=1,
+            positive_name=str(config.get("labeling", {}).get("positive_class_name", "positive")),
+            negative_name=str(config.get("labeling", {}).get("negative_class_name", "control")),
+        ),
     }
 
     save_json(k_selection, run_dirs.cluster_models / "k_selection.json")

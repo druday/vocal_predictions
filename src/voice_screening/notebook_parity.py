@@ -21,6 +21,9 @@ class NotebookSplit:
     train_mask: np.ndarray
     val_mask: np.ndarray
     test_mask: np.ndarray
+    split_seed: int | None = None
+    balance_score: float | None = None
+    balance_trials: int = 1
 
 
 @dataclass(frozen=True)
@@ -91,6 +94,7 @@ def participant_train_val_test_split(
     test_size: float,
     validation_size_from_train_val: float,
     random_seed: int,
+    balance_trials: int = 1,
 ) -> NotebookSplit:
     participant_ids_arr = np.asarray(participant_ids).astype(str)
     labels_arr = np.asarray(labels).astype(int)
@@ -103,21 +107,136 @@ def participant_train_val_test_split(
     participant_labels_series = pd.Series(labels_arr, index=participant_ids_arr).groupby(level=0).first()
     participant_labels = participant_labels_series.loc[unique_participants].to_numpy()
 
-    train_val_pids, test_pids, y_train_val, _ = train_test_split(
-        unique_participants,
-        participant_labels,
-        test_size=test_size,
-        random_state=random_seed,
-        stratify=participant_labels,
-    )
+    def _rate(arr: np.ndarray) -> float:
+        if arr.size == 0:
+            return float("nan")
+        return float(np.mean(arr.astype(float)))
 
-    train_pids, val_pids, _, _ = train_test_split(
-        train_val_pids,
-        y_train_val,
-        test_size=validation_size_from_train_val,
-        random_state=random_seed,
-        stratify=y_train_val,
-    )
+    def _split_once(
+        *,
+        seed: int,
+        stratified: bool,
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray] | None:
+        try:
+            stratify_outer = participant_labels if stratified and np.unique(participant_labels).size > 1 else None
+            train_val_pids, test_pids, y_train_val, _ = train_test_split(
+                unique_participants,
+                participant_labels,
+                test_size=test_size,
+                random_state=seed,
+                stratify=stratify_outer,
+            )
+            stratify_inner = y_train_val if stratified and np.unique(y_train_val).size > 1 else None
+            train_pids, val_pids, _, _ = train_test_split(
+                train_val_pids,
+                y_train_val,
+                test_size=validation_size_from_train_val,
+                random_state=seed,
+                stratify=stratify_inner,
+            )
+        except ValueError:
+            return None
+        return np.asarray(train_pids), np.asarray(val_pids), np.asarray(test_pids)
+
+    def _balance_objective(
+        *,
+        train_pids: np.ndarray,
+        val_pids: np.ndarray,
+        test_pids: np.ndarray,
+    ) -> tuple[float, float, float]:
+        train_set = set(train_pids.tolist())
+        val_set = set(val_pids.tolist())
+        test_set = set(test_pids.tolist())
+
+        train_mask = np.array([pid in train_set for pid in participant_ids_arr], dtype=bool)
+        val_mask = np.array([pid in val_set for pid in participant_ids_arr], dtype=bool)
+        test_mask = np.array([pid in test_set for pid in participant_ids_arr], dtype=bool)
+
+        pid_label_lookup = dict(zip(unique_participants.tolist(), participant_labels.tolist()))
+        y_train_pid = np.asarray([pid_label_lookup[pid] for pid in train_pids], dtype=int)
+        y_val_pid = np.asarray([pid_label_lookup[pid] for pid in val_pids], dtype=int)
+        y_test_pid = np.asarray([pid_label_lookup[pid] for pid in test_pids], dtype=int)
+
+        global_pid_rate = _rate(participant_labels)
+        global_rec_rate = _rate(labels_arr)
+
+        pid_rates = [_rate(y_train_pid), _rate(y_val_pid), _rate(y_test_pid)]
+        rec_rates = [_rate(labels_arr[train_mask]), _rate(labels_arr[val_mask]), _rate(labels_arr[test_mask])]
+        pid_dev = [abs(r - global_pid_rate) for r in pid_rates]
+        rec_dev = [abs(r - global_rec_rate) for r in rec_rates]
+
+        n_pid = max(1, len(unique_participants))
+        target_test = float(test_size)
+        target_val = float((1.0 - test_size) * validation_size_from_train_val)
+        target_train = float(1.0 - target_test - target_val)
+        actual = [len(train_pids) / n_pid, len(val_pids) / n_pid, len(test_pids) / n_pid]
+        targets = [target_train, target_val, target_test]
+        size_dev = [abs(a - t) for a, t in zip(actual, targets)]
+
+        # Penalize degenerate class splits; these break class-sensitive metrics downstream.
+        class_penalty = 0.0
+        for arr in (y_train_pid, y_val_pid, y_test_pid, labels_arr[train_mask], labels_arr[val_mask], labels_arr[test_mask]):
+            if np.unique(arr).size < 2:
+                class_penalty += 1.0
+
+        score = float(np.mean(pid_dev) + np.mean(rec_dev) + 0.5 * np.mean(size_dev) + 10.0 * class_penalty)
+        return score, float(np.max(pid_dev)), float(np.max(rec_dev))
+
+    n_trials = max(1, int(balance_trials))
+    candidate_seeds: list[int] = [int(random_seed)]
+    if n_trials > 1:
+        rng = np.random.default_rng(int(random_seed))
+        extras = rng.integers(low=0, high=np.iinfo(np.int32).max, size=n_trials - 1, dtype=np.int64)
+        candidate_seeds.extend(int(v) for v in extras.tolist())
+        # Keep deterministic order while removing accidental duplicates.
+        candidate_seeds = list(dict.fromkeys(candidate_seeds))
+
+    best_train: np.ndarray | None = None
+    best_val: np.ndarray | None = None
+    best_test: np.ndarray | None = None
+    best_seed: int | None = None
+    best_score: float | None = None
+    best_pid_dev: float = float("inf")
+    best_rec_dev: float = float("inf")
+    best_idx: int = int(1e9)
+
+    for idx, seed in enumerate(candidate_seeds):
+        split_triplet = _split_once(seed=seed, stratified=True)
+        if split_triplet is None:
+            continue
+        train_pids, val_pids, test_pids = split_triplet
+        score, max_pid_dev, max_rec_dev = _balance_objective(
+            train_pids=train_pids,
+            val_pids=val_pids,
+            test_pids=test_pids,
+        )
+        if best_score is None:
+            take = True
+        else:
+            take = (score, max_pid_dev, max_rec_dev, idx) < (best_score, best_pid_dev, best_rec_dev, best_idx)
+        if take:
+            best_train = train_pids
+            best_val = val_pids
+            best_test = test_pids
+            best_seed = int(seed)
+            best_score = float(score)
+            best_pid_dev = float(max_pid_dev)
+            best_rec_dev = float(max_rec_dev)
+            best_idx = int(idx)
+
+    if best_train is None or best_val is None or best_test is None:
+        fallback = _split_once(seed=int(random_seed), stratified=False)
+        if fallback is None:
+            raise RuntimeError("Unable to create participant train/val/test split.")
+        best_train, best_val, best_test = fallback
+        best_seed = int(random_seed)
+        best_score, _, _ = _balance_objective(
+            train_pids=best_train,
+            val_pids=best_val,
+            test_pids=best_test,
+        )
+
+    train_pids, val_pids, test_pids = best_train, best_val, best_test
 
     train_set = set(train_pids.tolist())
     val_set = set(val_pids.tolist())
@@ -134,7 +253,70 @@ def participant_train_val_test_split(
         train_mask=train_mask,
         val_mask=val_mask,
         test_mask=test_mask,
+        split_seed=best_seed,
+        balance_score=best_score,
+        balance_trials=n_trials,
     )
+
+
+def summarize_split_class_balance(
+    participant_ids: np.ndarray,
+    labels: np.ndarray,
+    split: NotebookSplit,
+    *,
+    positive_label: int = 1,
+    positive_name: str = "positive",
+    negative_name: str = "control",
+) -> dict[str, Any]:
+    participant_ids_arr = np.asarray(participant_ids).astype(str)
+    labels_arr = np.asarray(labels).astype(int)
+
+    unique_participants = pd.Series(participant_ids_arr).drop_duplicates().to_numpy()
+    participant_labels_series = pd.Series(labels_arr, index=participant_ids_arr).groupby(level=0).first()
+    participant_labels = participant_labels_series.reindex(unique_participants).to_numpy(dtype=int)
+    pid_to_label = dict(zip(unique_participants.tolist(), participant_labels.tolist()))
+
+    def _count(y: np.ndarray) -> dict[str, Any]:
+        y_arr = np.asarray(y).astype(int)
+        n_total = int(y_arr.size)
+        n_positive = int(np.sum(y_arr == int(positive_label)))
+        n_negative = int(n_total - n_positive)
+        positive_rate = float(n_positive / n_total) if n_total else float("nan")
+        return {
+            "n_total": n_total,
+            "n_positive": n_positive,
+            "n_negative": n_negative,
+            "positive_rate": positive_rate,
+        }
+
+    def _pid_labels(pids: np.ndarray) -> np.ndarray:
+        return np.asarray([pid_to_label[str(pid)] for pid in np.asarray(pids).astype(str)], dtype=int)
+
+    summary = {
+        "positive_label": int(positive_label),
+        "negative_label": int(1 - positive_label),
+        "positive_name": str(positive_name),
+        "negative_name": str(negative_name),
+        "overall": {
+            "recordings": _count(labels_arr),
+            "participants": _count(participant_labels),
+        },
+        "splits": {
+            "train": {
+                "recordings": _count(labels_arr[split.train_mask]),
+                "participants": _count(_pid_labels(split.train_participants)),
+            },
+            "val": {
+                "recordings": _count(labels_arr[split.val_mask]),
+                "participants": _count(_pid_labels(split.val_participants)),
+            },
+            "test": {
+                "recordings": _count(labels_arr[split.test_mask]),
+                "participants": _count(_pid_labels(split.test_participants)),
+            },
+        },
+    }
+    return summary
 
 
 def standardize_and_clip(

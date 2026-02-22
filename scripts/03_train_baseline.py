@@ -21,6 +21,7 @@ from voice_screening.notebook_parity import (
     clean_feature_dataframe,
     evaluate_binary_metrics,
     participant_train_val_test_split,
+    summarize_split_class_balance,
     standardize_and_clip,
 )
 from voice_screening.repro import update_run_manifest
@@ -72,6 +73,18 @@ def _split_config(config: dict) -> tuple[float, float]:
     test_fraction = float(split_cfg.get("test_fraction", 0.2))
     validation_fraction = float(split_cfg.get("validation_fraction", 0.2))
     return test_fraction, validation_fraction
+
+
+def _split_balance_trials(config: dict) -> int:
+    split_cfg = config.get("modeling", {}).get("split", {})
+    balance_cfg = split_cfg.get("balance", {})
+    if isinstance(balance_cfg, dict):
+        enabled = bool(balance_cfg.get("enabled", True))
+        trials = int(balance_cfg.get("trials", 64))
+    else:
+        enabled = bool(balance_cfg) if balance_cfg is not None else True
+        trials = 64
+    return max(1, trials if enabled else 1)
 
 
 def _cv_splits(config: dict) -> int:
@@ -352,12 +365,14 @@ def main() -> None:
 
     # Final notebook-style participant split for primary reporting and prediction plots.
     test_fraction, validation_fraction = _split_config(config)
+    balance_trials = _split_balance_trials(config)
     split = participant_train_val_test_split(
         participant_ids=participant_ids,
         labels=labels,
         test_size=test_fraction,
         validation_size_from_train_val=validation_fraction,
         random_seed=seed,
+        balance_trials=balance_trials,
     )
 
     x_train_raw = x_clean.loc[split.train_mask].to_numpy(dtype=np.float32)
@@ -458,6 +473,16 @@ def main() -> None:
         .to_csv(run_dirs.baseline / "model_backends.csv", index=False)
     )
 
+    label_cfg = config.get("labeling", {})
+    class_balance = summarize_split_class_balance(
+        participant_ids=participant_ids,
+        labels=labels,
+        split=split,
+        positive_label=1,
+        positive_name=str(label_cfg.get("positive_class_name", "positive")),
+        negative_name=str(label_cfg.get("negative_class_name", "control")),
+    )
+
     split_summary = {
         "analysis_mode": get_analysis_mode(config),
         "train_recordings": int(split.train_mask.sum()),
@@ -467,6 +492,10 @@ def main() -> None:
         "val_participants": int(len(split.val_participants)),
         "test_participants": int(len(split.test_participants)),
         "cv_n_splits": int(n_splits),
+        "split_seed": split.split_seed,
+        "split_balance_score": split.balance_score,
+        "split_balance_trials": int(split.balance_trials),
+        "class_balance": class_balance,
     }
     save_json(split_summary, run_dirs.baseline / "split_summary.json")
 
