@@ -57,51 +57,124 @@ def _phenotype_has_label_sources(df: pd.DataFrame, config: dict[str, Any]) -> bo
     return has_positive and has_control
 
 
-def _merge_phenotype_tables(files: list[Path], config: dict[str, Any]) -> pd.DataFrame | None:
-    participant_col = config["columns"]["participant_id"]
-    session_col = config["columns"]["session_id"]
-    loaded: list[tuple[Path, pd.DataFrame]] = []
-
-    for path in files:
-        try:
-            df = _read_tsv(path)
-        except Exception:
-            continue
-        if participant_col in df.columns:
-            loaded.append((path, df))
-
-    if not loaded:
+def _read_tsv_header(path: Path) -> list[str] | None:
+    try:
+        return pd.read_csv(path, sep="\t", nrows=0).columns.tolist()
+    except Exception:
         return None
 
-    def _score(path: Path) -> tuple[int, int, int, int]:
-        parts = [part.lower() for part in path.parts]
+
+def _collapse_to_unique_keys(df: pd.DataFrame, keys: list[str], value_col: str) -> pd.DataFrame:
+    keep = [*keys, value_col]
+    out = df[keep].copy()
+    out["_notna_value"] = out[value_col].notna().astype(int)
+    out = out.sort_values("_notna_value", ascending=False).drop(columns=["_notna_value"])
+    return out.drop_duplicates(subset=keys, keep="first")
+
+
+def _build_phenotype_from_nested_tables(files: list[Path], config: dict[str, Any]) -> pd.DataFrame | None:
+    participant_col = config["columns"]["participant_id"]
+    session_col = config["columns"]["session_id"]
+    label_cfg = config["labeling"]
+
+    sources: list[dict[str, Any]] = []
+    for path in files:
+        cols = _read_tsv_header(path)
+        if not cols or participant_col not in cols:
+            continue
+        sources.append(
+            {
+                "path": path,
+                "cols": cols,
+                "has_session": session_col in cols,
+                "positive_col": _match_column(cols, label_cfg["positive_column_candidates"]),
+                "control_col": _match_column(cols, label_cfg["control_column_candidates"]),
+            }
+        )
+
+    if not sources:
+        return None
+
+    control_sources = [s for s in sources if s["control_col"] is not None]
+    positive_sources = [s for s in sources if s["positive_col"] is not None]
+
+    if not control_sources and not positive_sources:
+        return None
+
+    def _score_control(src: dict[str, Any]) -> tuple[int, int, int]:
+        parts = [part.lower() for part in src["path"].parts]
+        name = src["path"].name.lower()
         return (
-            0 if path.name.lower() == "phenotype.tsv" else 1,
-            0 if "diagnosis" in parts else 1,
-            0 if "enrollment" in parts else 1,
+            0 if src["has_session"] else 1,
+            0 if "session" in parts or "session" in name else 1,
             len(parts),
         )
 
-    loaded.sort(key=lambda item: _score(item[0]))
-    merged = loaded[0][1].copy()
+    def _score_positive(src: dict[str, Any]) -> tuple[int, int, int]:
+        parts = [part.lower() for part in src["path"].parts]
+        name = src["path"].name.lower()
+        return (
+            0 if "diagnosis" in parts else 1,
+            0 if "parkinson" in name else 1,
+            len(parts),
+        )
 
-    for _, df in loaded[1:]:
+    if control_sources:
+        control_sources.sort(key=_score_control)
+        base = control_sources[0]
+        base_col = str(base["control_col"])
+    else:
+        positive_sources.sort(key=_score_positive)
+        base = positive_sources[0]
+        base_col = str(base["positive_col"])
+
+    base_keys = [participant_col]
+    if base["has_session"]:
+        base_keys.append(session_col)
+
+    base_usecols = [*base_keys, base_col]
+    phenotype_df = _read_tsv(base["path"])[base_usecols]
+    phenotype_df = _collapse_to_unique_keys(phenotype_df, base_keys, base_col)
+
+    def _merge_source(
+        dst: pd.DataFrame,
+        src: dict[str, Any],
+        value_col: str,
+    ) -> pd.DataFrame:
+        src_keys = [participant_col]
+        if src["has_session"]:
+            src_keys.append(session_col)
+
+        usecols = [*src_keys, value_col]
+        src_df = _read_tsv(src["path"])[usecols]
+        src_df = _collapse_to_unique_keys(src_df, src_keys, value_col)
+
         merge_keys = [participant_col]
-        if session_col in merged.columns and session_col in df.columns:
+        if session_col in dst.columns and src["has_session"]:
             merge_keys.append(session_col)
 
-        merged = merged.merge(df, on=merge_keys, how="outer", suffixes=("", "__dup"))
+        incoming = value_col
+        if incoming in dst.columns:
+            incoming = f"{value_col}__src"
+            src_df = src_df.rename(columns={value_col: incoming})
 
-        dup_cols = [col for col in merged.columns if col.endswith("__dup")]
-        for dup in dup_cols:
-            base = dup[:-5]
-            if base in merged.columns:
-                merged[base] = merged[base].where(merged[base].notna(), merged[dup])
-                merged = merged.drop(columns=[dup])
-            else:
-                merged = merged.rename(columns={dup: base})
+        out = dst.merge(src_df, on=merge_keys, how="left")
+        if incoming != value_col:
+            out[value_col] = out[value_col].where(out[value_col].notna(), out[incoming])
+            out = out.drop(columns=[incoming])
+        return out
 
-    return merged
+    for src in control_sources:
+        if src["path"] == base["path"] and str(src["control_col"]) == base_col:
+            continue
+        phenotype_df = _merge_source(phenotype_df, src, str(src["control_col"]))
+
+    for src in positive_sources:
+        if src["path"] == base["path"] and str(src["positive_col"]) == base_col:
+            continue
+        phenotype_df = _merge_source(phenotype_df, src, str(src["positive_col"]))
+
+    return phenotype_df
 
 
 def _discover_static_tsv(data_root: Path, preferred_name: str) -> Path | None:
@@ -143,9 +216,9 @@ def load_raw_tables(config: dict[str, Any]) -> tuple[pd.DataFrame, pd.DataFrame]
     if phenotype_df is None or not _phenotype_has_label_sources(phenotype_df, config):
         phenotype_candidates = _discover_phenotype_tsvs(data_root)
         if phenotype_candidates:
-            merged = _merge_phenotype_tables(phenotype_candidates, config)
-            if merged is not None:
-                phenotype_df = merged
+            discovered = _build_phenotype_from_nested_tables(phenotype_candidates, config)
+            if discovered is not None:
+                phenotype_df = discovered
 
     if phenotype_df is None:
         raise FileNotFoundError(

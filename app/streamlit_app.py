@@ -171,10 +171,6 @@ def _run_command(
 def _normalize_static_files() -> None:
     RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)
     target_candidates: dict[str, list[re.Pattern[str]]] = {
-        "phenotype.tsv": [
-            re.compile(r"^phenotype\.tsv$", re.IGNORECASE),
-            re.compile(r"phenotype.*\.tsv$", re.IGNORECASE),
-        ],
         "static_features.tsv": [
             re.compile(r"^static_features\.tsv$", re.IGNORECASE),
             re.compile(r"static.*features?.*\.tsv$", re.IGNORECASE),
@@ -182,6 +178,17 @@ def _normalize_static_files() -> None:
     }
 
     all_tsv = [p for p in RAW_DATA_DIR.rglob("*.tsv") if p.is_file()]
+
+    # Only normalize phenotype file when exact filename is available.
+    # Nested PhysioNet 3.0 phenotype tables are intentionally left in place;
+    # the data loader resolves them directly.
+    phenotype_exact = [p for p in all_tsv if p.name.lower() == "phenotype.tsv"]
+    if phenotype_exact:
+        phenotype_exact.sort(key=lambda p: (len(p.parts), len(str(p))))
+        src = phenotype_exact[0]
+        dst = RAW_DATA_DIR / "phenotype.tsv"
+        if src.resolve() != dst.resolve():
+            shutil.copy2(src, dst)
 
     for name, patterns in target_candidates.items():
         exact = [p for p in all_tsv if p.name == name]
@@ -191,19 +198,6 @@ def _normalize_static_files() -> None:
                 matches = [p for p in all_tsv if pat.search(p.name)]
                 if matches:
                     break
-        if not matches and name == "phenotype.tsv":
-            matches = [
-                p
-                for p in all_tsv
-                if "phenotype" in [part.lower() for part in p.parts]
-            ]
-            matches.sort(
-                key=lambda p: (
-                    0 if "diagnosis" in [part.lower() for part in p.parts] else 1,
-                    len(p.parts),
-                    len(str(p)),
-                )
-            )
         if not matches:
             continue
         matches.sort(key=lambda p: (len(p.parts), len(str(p))))
