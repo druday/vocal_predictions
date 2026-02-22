@@ -18,6 +18,8 @@ import streamlit.components.v1 as components
 ROOT = Path(__file__).resolve().parents[1]
 RAW_DATA_DIR = ROOT / "raw_data"
 PHENO_DIR = ROOT / "configs" / "phenotypes"
+DEFAULT_REPORT_FILE = ROOT / "app" / "default_report" / "manuscript_report.html"
+REQUIRED_RAW_FILES = ("phenotype.tsv", "static_features.tsv")
 DEFAULT_BASE_URL = "https://physionet.org/files/b2ai-voice/3.0.0/"
 PIPELINE_STAGE_HINTS: list[tuple[str, str, int]] = [
     ("scripts/01_prepare_dataset.py", "Stage 1/7: preparing dataset", 8),
@@ -80,6 +82,14 @@ def _report_is_for_phenotype(report_file: Path, phenotype: str) -> bool:
     except ValueError:
         return False
     return True
+
+
+def _missing_required_raw_files() -> list[str]:
+    missing: list[str] = []
+    for name in REQUIRED_RAW_FILES:
+        if not (RAW_DATA_DIR / name).exists():
+            missing.append(str(RAW_DATA_DIR / name))
+    return missing
 
 
 def _sanitize_logs(log_text: str, secrets: Iterable[str]) -> str:
@@ -206,10 +216,20 @@ def _render_onboarding() -> None:
             st.rerun()
 
 
-def _render_existing_report_selector(phenotype: str, reports: list[dict[str, str]]) -> None:
+def _render_existing_report_selector(
+    phenotype: str,
+    reports: list[dict[str, str]],
+    has_bundled_default: bool,
+) -> None:
     st.subheader("Open Existing Report")
     if not reports:
-        st.caption("No existing compiled reports found for this phenotype yet.")
+        if has_bundled_default:
+            st.caption(
+                "No existing compiled reports found for this phenotype yet. "
+                "Showing the bundled default report below."
+            )
+        else:
+            st.caption("No existing compiled reports found for this phenotype yet.")
         return
 
     labels = [r["label"] for r in reports]
@@ -271,11 +291,15 @@ def main() -> None:
         or not current_report.exists()
         or not _report_is_for_phenotype(current_report, phenotype)
     )
-    if needs_default_report and reports:
-        st.session_state["last_report_file"] = reports[0]["path"]
-        st.session_state["last_run_id"] = reports[0]["run_id"]
+    if needs_default_report:
+        if reports:
+            st.session_state["last_report_file"] = reports[0]["path"]
+            st.session_state["last_run_id"] = reports[0]["run_id"]
+        elif DEFAULT_REPORT_FILE.exists():
+            st.session_state["last_report_file"] = str(DEFAULT_REPORT_FILE)
+            st.session_state["last_run_id"] = "bundled-default"
 
-    _render_existing_report_selector(phenotype, reports)
+    _render_existing_report_selector(phenotype, reports, DEFAULT_REPORT_FILE.exists())
 
     st.subheader("Run New Pipeline")
     status_box = st.empty()
@@ -323,6 +347,19 @@ def main() -> None:
             status_box.info("Static files ready.")
             progress_bar.progress(5, text="Static files ready")
 
+        missing_required = _missing_required_raw_files()
+        if missing_required:
+            st.error("Required raw files are missing. Pipeline cannot start.")
+            with st.expander("How to fix"):
+                st.markdown(
+                    "1. Enable **Download static files before running pipeline** and run again.\n"
+                    "2. Or place these files manually in `raw_data/`:\n"
+                    f"- `{RAW_DATA_DIR / 'phenotype.tsv'}`\n"
+                    f"- `{RAW_DATA_DIR / 'static_features.tsv'}`"
+                )
+                st.code("\n".join(missing_required))
+            st.stop()
+
         rc, logs = _run_command(
             [
                 "make",
@@ -358,6 +395,11 @@ def main() -> None:
     if report_file_raw:
         report_file = Path(report_file_raw)
         if report_file.exists():
+            if report_file.resolve() == DEFAULT_REPORT_FILE.resolve():
+                st.info(
+                    "Showing bundled default report from the repository. "
+                    "Run the pipeline to generate a new run-specific report."
+                )
             st.success(f"Report ready: {report_file}")
             html_report = _inline_report_images(report_file)
             components.html(html_report, height=1400, scrolling=True)
