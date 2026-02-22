@@ -1,0 +1,27 @@
+phenotype:
+  name: parkinsons
+
+labeling:
+  positive_column_candidates:
+    - parkinsons
+    - parkinson
+  positive_values:
+    - "checked"
+    - "yes"
+    - "true"
+    - "1"
+
+  control_column_candidates:
+    - is_control_participant
+    - session_is_control_participant
+    - control
+    - healthy
+  control_values:
+    - "yes"
+    - "checked"
+    - "true"
+    - "1"
+
+  include_case_control_only: true
+  positive_class_name: parkinsons
+  negative_class_name: control

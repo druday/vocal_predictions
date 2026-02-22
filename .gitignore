@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# MacOS
+.DS_Store
+
+# Build/cache
+.pytest_cache/
+.ruff_cache/
+
+# Data/outputs
+outputs/
+raw_data/
+physionet.org/
+*.parquet
+*.feather
+*.pkl
+*.joblib
+
+# Env
+.env
