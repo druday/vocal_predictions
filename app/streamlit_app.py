@@ -161,6 +161,42 @@ def _normalize_static_files() -> None:
             shutil.copy2(src, dst)
 
 
+def _download_static_files(
+    *,
+    user: str,
+    password: str,
+    base_url: str,
+    status_box=None,
+    progress_bar=None,
+) -> tuple[bool, str]:
+    env = os.environ.copy()
+    env["PHYSIONET_USER"] = user
+    env["PHYSIONET_PASSWORD"] = password
+    rc, logs = _run_command(
+        [
+            str(ROOT / "scripts" / "download_physionet_b2ai.sh"),
+            "--mode",
+            "static",
+            "--base-url",
+            base_url,
+            "--dest",
+            str(RAW_DATA_DIR),
+        ],
+        env=env,
+        status_box=status_box,
+        progress_bar=progress_bar,
+        stage_hints=[
+            ("Downloading static-only files", "Downloading static files from PhysioNet", 3),
+        ],
+        secrets=[password],
+        start_message="Preparing static-file download",
+    )
+    if rc != 0:
+        return False, logs
+    _normalize_static_files()
+    return True, logs
+
+
 def _inline_report_images(report_file: Path) -> str:
     html_text = report_file.read_text(encoding="utf-8")
     report_dir = report_file.parent
@@ -212,6 +248,20 @@ def _render_onboarding() -> None:
             st.session_state["physionet_user"] = user.strip()
             st.session_state["physionet_password"] = password
             st.session_state["local_data_only"] = bool(local_only)
+            st.session_state["download_base_url"] = DEFAULT_BASE_URL
+            if not local_only:
+                with st.spinner("Downloading static files from PhysioNet..."):
+                    ok, logs = _download_static_files(
+                        user=user.strip(),
+                        password=password,
+                        base_url=DEFAULT_BASE_URL,
+                    )
+                if not ok:
+                    st.error("Automatic static-file download failed during setup.")
+                    with st.expander("Download logs"):
+                        st.code(logs)
+                    return
+                st.success("Static files downloaded successfully.")
             st.session_state["onboarded"] = True
             st.rerun()
 
@@ -277,7 +327,10 @@ def main() -> None:
         phenotype = st.selectbox("Phenotype", options=phenotypes, index=default_index)
         run_id = st.text_input("Run ID", value=st.session_state.get("last_run_id", _default_run_id()))
     with col2:
-        base_url = st.text_input("PhysioNet Base URL", value=DEFAULT_BASE_URL)
+        base_url = st.text_input(
+            "PhysioNet Base URL",
+            value=str(st.session_state.get("download_base_url", DEFAULT_BASE_URL)),
+        )
         download_before_run = st.checkbox(
             "Download static files before running pipeline",
             value=not st.session_state.get("local_data_only", False),
@@ -315,35 +368,20 @@ def main() -> None:
                 st.error("Credentials are missing. Restart session and complete first-time setup.")
                 st.stop()
 
-            env = os.environ.copy()
-            env["PHYSIONET_USER"] = user
-            env["PHYSIONET_PASSWORD"] = password
-            rc, logs = _run_command(
-                [
-                    str(ROOT / "scripts" / "download_physionet_b2ai.sh"),
-                    "--mode",
-                    "static",
-                    "--base-url",
-                    base_url,
-                    "--dest",
-                    str(RAW_DATA_DIR),
-                ],
-                env=env,
+            st.session_state["download_base_url"] = base_url
+            ok, logs = _download_static_files(
+                user=user,
+                password=password,
+                base_url=base_url,
                 status_box=status_box,
                 progress_bar=progress_bar,
-                stage_hints=[
-                    ("Downloading static-only files", "Downloading static files from PhysioNet", 3),
-                ],
-                secrets=[password],
-                start_message="Preparing static-file download",
             )
-            if rc != 0:
+            if not ok:
                 st.error("Static-file download failed.")
                 status_box.error("Static-file download failed.")
                 with st.expander("Download logs"):
                     st.code(logs)
                 st.stop()
-            _normalize_static_files()
             status_box.info("Static files ready.")
             progress_bar.progress(5, text="Static files ready")
 
@@ -353,11 +391,9 @@ def main() -> None:
             with st.expander("How to fix"):
                 st.markdown(
                     "1. Enable **Download static files before running pipeline** and run again.\n"
-                    "2. Or place these files manually in `raw_data/`:\n"
-                    f"- `{RAW_DATA_DIR / 'phenotype.tsv'}`\n"
-                    f"- `{RAW_DATA_DIR / 'static_features.tsv'}`"
+                    "2. Or place these files manually in `raw_data/`."
                 )
-                st.code("\n".join(missing_required))
+                st.markdown("\n".join(f"- `{p}`" for p in missing_required))
             st.stop()
 
         rc, logs = _run_command(
