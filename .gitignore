@@ -6,6 +6,15 @@ __pycache__/
 
 # Jupyter
 .ipynb_checkpoints/
+14_Cluster_Baseline_Classification_Acoustic_Standalone.ipynb
+Baseline_Classification_Acoustic_only_Standalone.ipynb
+Cluster_Based_Feature_Engineering_no_XG.ipynb
+EDA.ipynb
+Progressive_Feature_Selection.ipynb
+
+# Local manuscript/source docs
+BMI 6319 Proposal v2.pptx
+Data Analysis Plan_v2.docx.pdf
 
 # MacOS
 .DS_Store
