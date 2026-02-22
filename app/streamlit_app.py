@@ -43,6 +43,13 @@ def _default_run_id() -> str:
     return "run" + datetime.now().strftime("%Y%m%d-%H%M%S")
 
 
+def _default_run_id_for_ui() -> str:
+    prior = str(st.session_state.get("last_run_id", "")).strip()
+    if prior and prior != "bundled-default":
+        return prior
+    return _default_run_id()
+
+
 def _report_path(phenotype: str, run_id: str) -> Path:
     return ROOT / "outputs" / phenotype / run_id / "reports" / "manuscript_report.html"
 
@@ -381,7 +388,7 @@ def main() -> None:
     col1, col2 = st.columns(2)
     with col1:
         phenotype = st.selectbox("Phenotype", options=phenotypes, index=default_index)
-        run_id = st.text_input("Run ID", value=st.session_state.get("last_run_id", _default_run_id()))
+        run_id = st.text_input("Run ID", value=_default_run_id_for_ui())
     with col2:
         base_url = st.text_input(
             "PhysioNet Base URL",
