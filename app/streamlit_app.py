@@ -73,6 +73,15 @@ def _discover_reports(phenotype: str) -> list[dict[str, str]]:
     return rows
 
 
+def _report_is_for_phenotype(report_file: Path, phenotype: str) -> bool:
+    pheno_root = (ROOT / "outputs" / phenotype).resolve()
+    try:
+        report_file.resolve().relative_to(pheno_root)
+    except ValueError:
+        return False
+    return True
+
+
 def _sanitize_logs(log_text: str, secrets: Iterable[str]) -> str:
     cleaned = str(log_text)
     for secret in secrets:
@@ -197,18 +206,25 @@ def _render_onboarding() -> None:
             st.rerun()
 
 
-def _render_existing_report_selector(phenotype: str) -> None:
-    reports = _discover_reports(phenotype)
+def _render_existing_report_selector(phenotype: str, reports: list[dict[str, str]]) -> None:
     st.subheader("Open Existing Report")
     if not reports:
         st.caption("No existing compiled reports found for this phenotype yet.")
         return
 
     labels = [r["label"] for r in reports]
+    selected_index = 0
+    current_report_path = str(st.session_state.get("last_report_file", ""))
+    current_run_id = str(st.session_state.get("last_run_id", ""))
+    for idx, row in enumerate(reports):
+        if row["path"] == current_report_path or row["run_id"] == current_run_id:
+            selected_index = idx
+            break
+
     selected_label = st.selectbox(
         "Available runs",
         options=labels,
-        index=0,
+        index=selected_index,
         key=f"existing_report_{phenotype}",
     )
     if st.button("Open Selected Report"):
@@ -247,7 +263,19 @@ def main() -> None:
             value=not st.session_state.get("local_data_only", False),
         )
 
-    _render_existing_report_selector(phenotype)
+    reports = _discover_reports(phenotype)
+    current_report_raw = st.session_state.get("last_report_file")
+    current_report = Path(current_report_raw) if current_report_raw else None
+    needs_default_report = (
+        current_report is None
+        or not current_report.exists()
+        or not _report_is_for_phenotype(current_report, phenotype)
+    )
+    if needs_default_report and reports:
+        st.session_state["last_report_file"] = reports[0]["path"]
+        st.session_state["last_run_id"] = reports[0]["run_id"]
+
+    _render_existing_report_selector(phenotype, reports)
 
     st.subheader("Run New Pipeline")
     status_box = st.empty()
