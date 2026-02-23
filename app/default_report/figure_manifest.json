@@ -1,0 +1,15 @@
+{
+  "analysis_mode": "confirmatory",
+  "figure_count": 75,
+  "phenotype": "parkinsons",
+  "run_id": "run20260222-180518",
+  "sections": {
+    "acoustic": "reports/figures/01_acoustic_features",
+    "cluster_decision": "reports/figures/02_feature_clustering_decision",
+    "cluster_insights": "reports/figures/03_feature_clustering_insights",
+    "patient": "reports/figures/06_patient_level_performance",
+    "progressive": "reports/figures/04_progressive_feature_selection",
+    "recording": "reports/figures/05_recording_level_performance"
+  },
+  "tuning_split": "val"
+}

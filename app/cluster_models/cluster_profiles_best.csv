@@ -1,0 +1,23 @@
+cluster_id,n_features,dominant_category,category_breakdown,example_features,cluster_importance
+11,3,Other,Other:3,"alphaRatioUV_sma3nz_amean, hammarbergIndexUV_sma3nz_amean, slopeUV0-500_sma3nz_amean",0.26659578925890004
+8,11,Energy,"Energy:6, Other:5","equivalentSoundLevel_dBp, loudness_sma3_meanFallingSlope, loudness_sma3_meanRisingSlope, loudness_sma3_pctlrange0-2, loudness_sma3_percentile80.0, loudness_sma3_stddevFallingSlope",0.03463402334444643
+18,3,MFCC,"MFCC:2, Formant:1","mfcc3V_sma3nz_amean, mfcc3_sma3_amean, std_f2_loc",0.032519324264979006
+2,8,Prosody,"Prosody:6, Other:2","F1amplitudeLogRelF0_sma3nz_amean, F1amplitudeLogRelF0_sma3nz_stddevNorm, F2amplitudeLogRelF0_sma3nz_amean, F2amplitudeLogRelF0_sma3nz_stddevNorm, F3amplitudeLogRelF0_sma3nz_amean, F3amplitudeLogRelF0_sma3nz_stddevNorm",0.029069021586411385
+5,3,MFCC,"MFCC:2, Other:1","mfcc4V_sma3nz_amean, mfcc4_sma3_amean, slopeV0-500_sma3nz_amean",0.02111017972907908
+9,7,Other,"MFCC:2, Prosody:1, Other:4","alphaRatioV_sma3nz_amean, hammarbergIndexV_sma3nz_amean, logRelF0-H1-A3_sma3nz_amean, mfcc2V_sma3nz_amean, mfcc2_sma3_amean, spectral_gravity",0.019824651887875543
+17,2,Other,Other:2,"mean_b2_loc, std_b2_loc",0.01763809577266708
+21,6,Other,"Energy:1, Other:5","loudness_sma3_stddevNorm, mean_pause_duration, pause_rate, phonation_ratio, spectralFlux_sma3_stddevNorm, std_intensity_db",0.017085179623173387
+7,4,Energy,"Energy:3, Other:1","loudness_sma3_amean, loudness_sma3_percentile20.0, loudness_sma3_percentile50.0, slopeUV500-1500_sma3nz_amean",0.01695285924281646
+20,7,Other,"Energy:1, Other:6","VoicedSegmentsPerSec, articulation_rate, loudnessPeaksPerSec, pesq, si_sdr, speaking_rate",0.010896763803399472
+4,7,MFCC,"MFCC:2, Prosody:2, Formant:1, Other:2","mean_f0_hertz, mean_f2_loc, mfcc1V_sma3nz_amean, mfcc1_sma3_amean, spectral_slope, spectral_tilt",0.010029651838452853
+19,3,Prosody,"Prosody:2, Other:1","StddevUnvoicedSegmentLength, jitterLocal_sma3nz_amean, shimmerLocaldB_sma3nz_amean",0.009960027648455166
+3,15,Prosody,"Prosody:14, Other:1","HNRdBACF_sma3nz_amean, apq11_shimmer, apq3_shimmer, apq5_shimmer, cepstral_peak_prominence_mean, dda_shimmer",0.009886493772037246
+10,2,Other,Other:2,"spectral_kurtosis, spectral_skewness",0.009177825600097222
+16,3,Other,"Prosody:1, Other:2","cepstral_peak_prominence_std, duration, std_hnr_db",0.00888813813495784
+1,19,Formant,"Prosody:5, Formant:12, Other:2","F0semitoneFrom27.5Hz_sma3nz_amean, F0semitoneFrom27.5Hz_sma3nz_percentile20.0, F0semitoneFrom27.5Hz_sma3nz_percentile50.0, F0semitoneFrom27.5Hz_sma3nz_percentile80.0, F1bandwidth_sma3nz_amean, F1bandwidth_sma3nz_stddevNorm",0.008764934472596565
+6,5,Other,"Formant:2, Other:3","mean_b1_loc, mean_f1_loc, slopeV500-1500_sma3nz_amean, std_b1_loc, std_f1_loc",0.008340764385174948
+22,6,Prosody,Prosody:6,"F0semitoneFrom27.5Hz_sma3nz_meanFallingSlope, F0semitoneFrom27.5Hz_sma3nz_meanRisingSlope, F0semitoneFrom27.5Hz_sma3nz_pctlrange0-2, F0semitoneFrom27.5Hz_sma3nz_stddevFallingSlope, F0semitoneFrom27.5Hz_sma3nz_stddevNorm, F0semitoneFrom27.5Hz_sma3nz_stddevRisingSlope",0.006032637320895801
+14,2,MFCC,"MFCC:1, Other:1","mfcc1_sma3_stddevNorm, range_ratio_intensity_db",0.0029411785471711803
+13,9,MFCC,"MFCC:4, Prosody:4, Other:1","HNRdBACF_sma3nz_stddevNorm, logRelF0-H1-A3_sma3nz_stddevNorm, logRelF0-H1-H2_sma3nz_amean, logRelF0-H1-H2_sma3nz_stddevNorm, mfcc2_sma3_stddevNorm, mfcc3V_sma3nz_stddevNorm",0.0027143196545496738
+12,3,MFCC,"MFCC:2, Other:1","mfcc2V_sma3nz_stddevNorm, mfcc4_sma3_stddevNorm, slopeV500-1500_sma3nz_stddevNorm",0.0009227830754176047
+15,3,Other,"MFCC:1, Other:2","alphaRatioV_sma3nz_stddevNorm, hammarbergIndexV_sma3nz_stddevNorm, mfcc1V_sma3nz_stddevNorm",0.0004836008511996559

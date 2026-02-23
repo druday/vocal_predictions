@@ -1,0 +1,31 @@
+phenotype:
+  name: probable_parkinsonian
+
+labeling:
+  # Probable Parkinsonian spectrum:
+  #   IPD + atypical parkinsonism + DLB + MSA + PSP
+  # Excludes "Not Sure / Undetermined".
+  positive_column_candidates:
+    - diagnosis_parkinsons_disease_subtype
+    - parkinsons_disease_subtype
+  positive_values:
+    - "Idiopathic Parkinson's Disease (IPD)"
+    - "Other Parkinsonism or Atypical Parkinsonism"
+    - "Dementia with Lewy Bodies (DLB)"
+    - "Multiple System Atrophy (MSA)"
+    - "Progressive Supranuclear Palsy (PSP)"
+
+  control_column_candidates:
+    - is_control_participant
+    - session_is_control_participant
+    - control
+    - healthy
+  control_values:
+    - "yes"
+    - "checked"
+    - "true"
+    - "1"
+
+  include_case_control_only: true
+  positive_class_name: probable parkinsonian
+  negative_class_name: control

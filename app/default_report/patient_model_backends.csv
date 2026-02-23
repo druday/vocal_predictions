@@ -1,0 +1,10 @@
+model,model_display,estimator_class
+elastic_net_logistic,Elastic-Net Logistic,SGDClassifier
+extra_trees,Extra Trees,ExtraTreesClassifier
+hist_gradient_boosting,Hist Gradient Boosting,HistGradientBoostingClassifier
+logistic_regression,Logistic Regression,LogisticRegression
+mlp,Neural Network,TorchRegularizedHybridNetClassifier
+random_forest,Random Forest,RandomForestClassifier
+residual_mlp,Residual Neural Network,TorchResidualHybridNetClassifier
+svc_rbf,RBF SVM,SVC
+wide_deep_mlp,Wide+Deep Neural Network,TorchWideDeepNetClassifier

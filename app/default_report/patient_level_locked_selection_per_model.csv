@@ -1,0 +1,10 @@
+model,model_display,estimator_class,patient_aggregation,evaluation_split,selection_metric,n_features,threshold,cluster_k,cluster_aggregation,n_train_patients,n_val_patients,n_test_patients,accuracy,roc_auc,f1,precision,recall,best_epoch
+logistic_regression,Logistic Regression,LogisticRegression,mean,val,roc_auc,22,0.5,22,mean,99,25,32,1.0,1.0,1.0,1.0,1.0,
+extra_trees,Extra Trees,ExtraTreesClassifier,max,val,roc_auc,22,0.5,22,mean,99,25,32,1.0,1.0,1.0,1.0,1.0,
+svc_rbf,RBF SVM,SVC,std,val,roc_auc,22,0.5,22,mean,99,25,32,1.0,1.0,1.0,1.0,1.0,
+elastic_net_logistic,Elastic-Net Logistic,SGDClassifier,mean,val,roc_auc,22,0.5,22,mean,99,25,32,0.96,1.0,0.8,0.6666666666666666,1.0,
+random_forest,Random Forest,RandomForestClassifier,mean,val,roc_auc,22,0.5,22,mean,99,25,32,0.96,1.0,0.6666666666666666,1.0,0.5,
+residual_mlp,Residual Neural Network,TorchResidualHybridNetClassifier,mean,val,roc_auc,22,0.5,22,mean,99,25,32,0.96,1.0,0.6666666666666666,1.0,0.5,13.0
+hist_gradient_boosting,Hist Gradient Boosting,HistGradientBoostingClassifier,median,val,roc_auc,22,0.5,22,mean,99,25,32,0.96,1.0,0.6666666666666666,1.0,0.5,
+mlp,Neural Network,TorchRegularizedHybridNetClassifier,median,val,roc_auc,22,0.5,22,mean,99,25,32,0.96,1.0,0.6666666666666666,1.0,0.5,2.0
+wide_deep_mlp,Wide+Deep Neural Network,TorchWideDeepNetClassifier,min,val,roc_auc,22,0.5,22,mean,99,25,32,0.72,1.0,0.36363636363636365,0.2222222222222222,1.0,30.0

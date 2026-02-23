@@ -1,0 +1,10 @@
+search_stage,evaluation_split,n_clusters,aggregation,model,model_display,estimator_class,n_features,threshold,accuracy,roc_auc,f1,precision,recall,best_epoch
+locked_final,test,22,mean,logistic_regression,Logistic Regression,LogisticRegression,22,0.5,0.7836117740652346,0.8908386107109172,0.5358361774744027,0.3857493857493858,0.8770949720670391,
+locked_final,test,22,mean,elastic_net_logistic,Elastic-Net Logistic,SGDClassifier,22,0.5,0.7883850437549722,0.9002601548491412,0.5445205479452054,0.3925925925925926,0.888268156424581,
+locked_final,test,22,mean,random_forest,Random Forest,RandomForestClassifier,22,0.5,0.8997613365155132,0.9282293923155854,0.6785714285714286,0.6244131455399061,0.7430167597765364,
+locked_final,test,22,mean,extra_trees,Extra Trees,ExtraTreesClassifier,22,0.5,0.8456642800318218,0.9023227371192256,0.5907172995780591,0.4745762711864407,0.7821229050279329,
+locked_final,test,22,mean,hist_gradient_boosting,Hist Gradient Boosting,HistGradientBoostingClassifier,22,0.5,0.9204455051710422,0.9452223753899732,0.6875,0.7801418439716312,0.6145251396648045,
+locked_final,test,22,mean,svc_rbf,RBF SVM,SVC,22,0.5,0.9085123309466984,0.9297296877105335,0.6666666666666666,0.6927710843373494,0.6424581005586593,
+locked_final,test,22,mean,mlp,Neural Network,TorchRegularizedHybridNetClassifier,22,0.5,0.9077167859984088,0.9280324623501,0.6795580110497238,0.6721311475409836,0.6871508379888268,21.0
+locked_final,test,22,mean,residual_mlp,Residual Neural Network,TorchResidualHybridNetClassifier,22,0.5,0.9069212410501192,0.9286491640841202,0.6759002770083102,0.6703296703296703,0.6815642458100558,19.0
+locked_final,test,22,mean,wide_deep_mlp,Wide+Deep Neural Network,TorchWideDeepNetClassifier,22,0.5,0.9164677804295944,0.9362672443278988,0.7107438016528925,0.7010869565217391,0.7206703910614525,21.0

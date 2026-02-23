@@ -1,0 +1,69 @@
+{
+  "all_models": [
+    "logistic_regression",
+    "elastic_net_logistic",
+    "random_forest",
+    "extra_trees",
+    "hist_gradient_boosting",
+    "svc_rbf",
+    "mlp",
+    "residual_mlp",
+    "wide_deep_mlp"
+  ],
+  "analysis_mode": "confirmatory",
+  "evaluate_all_models_at_locked_k": true,
+  "lock_balanced_deltas": {
+    "accuracy_near_top_delta": 0.02,
+    "f1_near_top_delta": 0.02,
+    "min_performance_votes": 2,
+    "roc_auc_near_top_delta": 0.015,
+    "stability_near_top_delta": 0.03
+  },
+  "lock_balanced_gate_source": "stable_and_performance",
+  "lock_balanced_weights": {
+    "accuracy": 0.05,
+    "f1": 0.1,
+    "roc_auc": 0.53,
+    "small_k": 0.02,
+    "stability": 0.3
+  },
+  "lock_candidate_count": 4,
+  "lock_candidate_k_values": [
+    19,
+    20,
+    21,
+    22
+  ],
+  "lock_override_k": null,
+  "lock_selected_score_components": {
+    "accuracy": 0.9073705179282868,
+    "balanced_performance_votes": 3,
+    "balanced_score": 0.9800000000000001,
+    "f1": 0.6804123711340206,
+    "roc_auc": 0.947376253410339,
+    "stability_ari_mean": 0.9342657250006755
+  },
+  "lock_source": "balanced_stability_performance",
+  "lock_strategy": "balanced_stability_performance",
+  "lock_validity_weights": {
+    "elbow": 0.1,
+    "performance": 0.6,
+    "silhouette": 0.05,
+    "small_k": 0.05,
+    "stability": 0.2
+  },
+  "refit_on_train_val": true,
+  "search_models": [
+    "mlp",
+    "residual_mlp",
+    "wide_deep_mlp"
+  ],
+  "selected_aggregation": "mean",
+  "selected_k": 22,
+  "selection_aggregation": "mean",
+  "selection_metric": "roc_auc",
+  "selection_model": "wide_deep_mlp",
+  "selection_model_policy": "best_available_prefer_dl",
+  "selection_model_source": "best_available_prefer_dl",
+  "tuning_split": "val"
+}

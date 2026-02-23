@@ -1,0 +1,149 @@
+{
+  "analysis_mode": "confirmatory",
+  "config_sha256": "948c3a25c66f1ebc4bb51cb8bdfe6703cc1375dcccb04b3f4e5901c6a8760961",
+  "created_at_utc": "2026-02-23T00:05:46.614980+00:00",
+  "dependencies": {
+    "matplotlib": "3.10.8",
+    "numpy": "2.4.2",
+    "pandas": "2.3.3",
+    "pyarrow": "23.0.1",
+    "pyyaml": "6.0.3",
+    "scikit-learn": "1.8.0",
+    "scipy": "1.17.0",
+    "seaborn": "0.13.2",
+    "torch": "2.10.0"
+  },
+  "git": {
+    "available": true,
+    "branch": "main",
+    "commit_short": "75062ea",
+    "dirty": false
+  },
+  "phenotype": "parkinsons",
+  "platform": {
+    "machine": "arm64",
+    "release": "25.3.0",
+    "system": "Darwin"
+  },
+  "python": {
+    "implementation": "CPython",
+    "version": "3.13.11"
+  },
+  "random_seed": 42,
+  "run_id": "run20260222-180518",
+  "stages": [
+    {
+      "completed_at_utc": "2026-02-23T00:05:46.614980+00:00",
+      "extra": {
+        "n_features": 131,
+        "n_participants": 156,
+        "n_records": 5966
+      },
+      "stage": "01_prepare_dataset"
+    },
+    {
+      "completed_at_utc": "2026-02-23T00:06:14.575255+00:00",
+      "extra": {
+        "k_values": [
+          5,
+          10,
+          15,
+          20,
+          50,
+          70,
+          90,
+          110,
+          130
+        ]
+      },
+      "stage": "02_cluster_features"
+    },
+    {
+      "completed_at_utc": "2026-02-23T00:10:59.316160+00:00",
+      "extra": {
+        "cv_n_splits": 5,
+        "models": [
+          "logistic_regression",
+          "elastic_net_logistic",
+          "random_forest",
+          "extra_trees",
+          "hist_gradient_boosting",
+          "svc_rbf",
+          "mlp",
+          "residual_mlp",
+          "wide_deep_mlp"
+        ]
+      },
+      "stage": "03_train_baseline"
+    },
+    {
+      "completed_at_utc": "2026-02-23T00:22:41.786126+00:00",
+      "extra": {
+        "all_models": [
+          "logistic_regression",
+          "elastic_net_logistic",
+          "random_forest",
+          "extra_trees",
+          "hist_gradient_boosting",
+          "svc_rbf",
+          "mlp",
+          "residual_mlp",
+          "wide_deep_mlp"
+        ],
+        "analysis_mode": "confirmatory",
+        "lock_override_k": null,
+        "lock_source": "balanced_stability_performance",
+        "lock_strategy": "balanced_stability_performance",
+        "search_models": [
+          "mlp",
+          "residual_mlp",
+          "wide_deep_mlp"
+        ],
+        "selected_aggregation": "mean",
+        "selected_k": 22,
+        "selection_model": "wide_deep_mlp",
+        "selection_model_policy": "best_available_prefer_dl",
+        "selection_model_source": "best_available_prefer_dl",
+        "tuning_split": "val"
+      },
+      "stage": "04_train_cluster_models"
+    },
+    {
+      "completed_at_utc": "2026-02-23T00:22:50.310720+00:00",
+      "extra": {
+        "analysis_mode": "confirmatory",
+        "selected_aggregation_by_model": {
+          "elastic_net_logistic": "mean",
+          "extra_trees": "max",
+          "hist_gradient_boosting": "median",
+          "logistic_regression": "mean",
+          "mlp": "median",
+          "random_forest": "mean",
+          "residual_mlp": "mean",
+          "svc_rbf": "std",
+          "wide_deep_mlp": "min"
+        },
+        "selection_metric": "roc_auc",
+        "selection_split": "val"
+      },
+      "stage": "05_patient_level_eval"
+    },
+    {
+      "completed_at_utc": "2026-02-23T00:23:45.776449+00:00",
+      "extra": {
+        "analysis_mode": "confirmatory",
+        "figure_count": 75
+      },
+      "stage": "06_generate_figures_tables"
+    },
+    {
+      "completed_at_utc": "2026-02-23T00:23:46.511445+00:00",
+      "extra": {
+        "analysis_mode": "confirmatory",
+        "tuning_split": "val"
+      },
+      "stage": "07_compile_html_report"
+    }
+  ],
+  "updated_at_utc": "2026-02-23T00:23:46.511445+00:00"
+}

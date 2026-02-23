@@ -1,0 +1,15 @@
+{
+  "report_version": "v1",
+  "generated_at_utc": "2026-02-23T00:23:46.488187+00:00",
+  "run_id": "run20260222-180518",
+  "phenotype": "parkinsons",
+  "random_seed": 42,
+  "analysis_mode": "confirmatory",
+  "tuning_split": "val",
+  "source_paths": {
+    "prepared": "outputs/parkinsons/run20260222-180518/prepared",
+    "baseline": "outputs/parkinsons/run20260222-180518/baseline",
+    "cluster_models": "outputs/parkinsons/run20260222-180518/cluster_models",
+    "reports": "outputs/parkinsons/run20260222-180518/reports"
+  }
+}

@@ -1,0 +1,289 @@
+model,model_display,patient_aggregation,evaluation_split,selection_split,participant_id,label,probability,prediction,threshold,cluster_k,cluster_aggregation
+logistic_regression,Logistic Regression,mean,test,val,129630,0,0.028414765098991386,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,174737,0,0.0029388572673972025,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,179879,0,0.08798944913883627,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,249673,0,0.13681467980085388,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,291813,0,0.0692268737485736,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,342938,0,0.00015379507797724893,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,380867,1,0.82214316651594,1,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,396371,0,0.004009118273663896,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,453090,0,0.06506291171085128,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,458934,0,0.0028247253715534553,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,484712,0,0.0046548717672185635,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,535677,0,0.005544668729353417,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,544851,0,0.0016926978708583914,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,556982,0,0.001160009732622962,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,656551,0,0.003979035527410344,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,657544,0,0.012718736631654369,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,687954,0,0.23663173690389475,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,710837,1,0.8086369165403533,1,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,726260,0,0.4605783054108872,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,7388,0,0.8753909595217897,1,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,751293,0,0.11514050868872537,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,753517,0,0.00010847180072410261,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,775174,0,0.26189817972406104,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,777910,0,0.11719101730504786,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,833061,0,0.017480533624457055,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,865722,0,0.7206410316236592,1,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,884551,1,0.823771941159136,1,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,894635,0,0.06099503017457708,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,912826,0,0.12605367915647103,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,937262,0,0.06799241571346586,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,969632,0,0.004781600010204132,0,0.5,22,mean
+logistic_regression,Logistic Regression,mean,test,val,998165,0,0.034193159462584624,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,129630,0,0.25974319592615575,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,174737,0,0.15813285443539243,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,179879,0,0.259005668473411,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,249673,0,0.32838413027482155,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,291813,0,0.12441131836923675,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,342938,0,0.24407651922009702,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,380867,1,0.5967041937710074,1,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,396371,0,0.20939304483734134,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,453090,0,0.28624853891016677,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,458934,0,0.3587868493794925,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,484712,0,0.32309962645107093,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,535677,0,0.12438948408507423,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,544851,0,0.14406953664547548,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,556982,0,0.17193855981701459,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,656551,0,0.29120730962253505,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,657544,0,0.2792927581546949,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,687954,0,0.26458961301259837,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,710837,1,0.5810909976229524,1,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,726260,0,0.44304530709499884,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,7388,0,0.47547522552989435,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,751293,0,0.1530785791690532,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,753517,0,0.1337135155483068,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,775174,0,0.32611609863705693,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,777910,0,0.17983392052511982,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,833061,0,0.20420735870868753,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,865722,0,0.3423973587370991,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,884551,1,0.4930800822023904,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,894635,0,0.4262085178685745,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,912826,0,0.22667434109005738,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,937262,0,0.41709633618917874,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,969632,0,0.2758764713323996,0,0.5,22,mean
+extra_trees,Extra Trees,max,test,val,998165,0,0.30062217133701125,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,129630,0,0.03698536434286806,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,174737,0,0.014862797650490426,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,179879,0,0.058655286360868066,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,249673,0,0.04205766320939063,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,291813,0,0.1305044433045457,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,342938,0,0.09877645135820665,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,380867,1,0.6063841536798292,1,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,396371,0,0.009376310257066672,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,453090,0,0.02367965212004632,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,458934,0,0.13850322148026348,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,484712,0,0.0329516550375889,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,535677,0,0.0256842930400895,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,544851,0,0.013526171775047644,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,556982,0,0.016573106789399796,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,656551,0,0.026279915087795945,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,657544,0,0.09698032924436792,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,687954,0,0.01860160630953979,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,710837,1,0.30076997685868373,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,726260,0,0.033033410705869,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,7388,0,0.04071874884497641,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,751293,0,0.02122803212058604,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,753517,0,0.019440205831177202,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,775174,0,0.05222364657780463,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,777910,0,0.023183160254856824,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,833061,0,0.030363678064298082,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,865722,0,0.07781658565083328,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,884551,1,0.2876940033305547,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,894635,0,0.0661179427926253,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,912826,0,0.024672779859992694,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,937262,0,0.04146287347578966,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,969632,0,0.06487169806574875,0,0.5,22,mean
+svc_rbf,RBF SVM,std,test,val,998165,0,0.0359992515599856,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,129630,0,1.0726284389088874e-19,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,174737,0,3.156357440910138e-51,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,179879,0,6.282503657508486e-30,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,249673,0,9.563593850153719e-18,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,291813,0,2.3341397907832333e-29,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,342938,0,5.0176507325065826e-73,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,380867,1,1.3752416704823696e-09,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,396371,0,2.179533765284935e-58,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,453090,0,1.195729519856558e-38,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,458934,0,6.688360432669143e-58,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,484712,0,4.056760656885513e-64,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,535677,0,4.808320536008387e-58,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,544851,0,1.5455770712677106e-69,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,556982,0,3.763314089598046e-53,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,656551,0,2.1275386184685223e-47,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,657544,0,5.773164579936749e-36,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,687954,0,3.678943243842323e-19,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,710837,1,0.8551688255848542,1,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,726260,0,2.8953862171996774e-14,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,7388,0,0.9999999980883778,1,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,751293,0,3.633598426470842e-20,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,753517,0,5.843011513745886e-92,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,775174,0,2.7676026772636033e-17,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,777910,0,4.338116666530101e-25,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,833061,0,5.090600361963473e-41,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,865722,0,3.745819035830593e-08,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,884551,1,0.2005105923921004,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,894635,0,2.3044134381646383e-25,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,912826,0,7.390766448224325e-25,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,937262,0,8.355989685257528e-33,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,969632,0,5.912508104456223e-43,0,0.5,22,mean
+elastic_net_logistic,Elastic-Net Logistic,mean,test,val,998165,0,3.6069672476489665e-34,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,129630,0,0.14230068214063502,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,174737,0,0.07873893319456983,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,179879,0,0.28725928572831433,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,249673,0,0.19551889622306567,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,291813,0,0.03421424468095588,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,342938,0,0.05164083660844211,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,380867,1,0.5409465795714546,1,0.5,22,mean
+random_forest,Random Forest,mean,test,val,396371,0,0.06469219965145971,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,453090,0,0.10574760774374865,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,458934,0,0.39483554732501447,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,484712,0,0.08235603717077397,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,535677,0,0.14256903445134606,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,544851,0,0.10740629870989679,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,556982,0,0.0988504231360633,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,656551,0,0.11485131510696091,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,657544,0,0.20003929394009562,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,687954,0,0.24033847290961266,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,710837,1,0.561119511597599,1,0.5,22,mean
+random_forest,Random Forest,mean,test,val,726260,0,0.18207530556792914,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,7388,0,0.48495222326099213,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,751293,0,0.0880041213531352,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,753517,0,0.16359747403780267,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,775174,0,0.3068667142090806,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,777910,0,0.1723257468132771,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,833061,0,0.16740422166604504,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,865722,0,0.47078767200335864,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,884551,1,0.3137356424556503,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,894635,0,0.12851229079374543,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,912826,0,0.11666168758505452,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,937262,0,0.3646644700669997,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,969632,0,0.04839282081437946,0,0.5,22,mean
+random_forest,Random Forest,mean,test,val,998165,0,0.1628591432771446,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,129630,0,0.16865916550159454,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,174737,0,0.10120855271816254,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,179879,0,0.3055769205093384,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,249673,0,0.1573217660188675,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,291813,0,0.2240888923406601,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,342938,0,0.1566925346851349,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,380867,1,0.5150921940803528,1,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,396371,0,0.18465949594974518,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,453090,0,0.2558441758155823,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,458934,0,0.07699727267026901,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,484712,0,0.24976535141468048,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,535677,0,0.12676535546779633,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,544851,0,0.26041698455810547,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,556982,0,0.11194740980863571,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,656551,0,0.16465820372104645,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,657544,0,0.16409115493297577,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,687954,0,0.4037141799926758,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,710837,1,0.5377880930900574,1,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,726260,0,0.12702423334121704,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,7388,0,0.5137576460838318,1,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,751293,0,0.11744045466184616,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,753517,0,0.130954310297966,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,775174,0,0.11768336594104767,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,777910,0,0.2529160976409912,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,833061,0,0.19468997418880463,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,865722,0,0.5255171060562134,1,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,884551,1,0.454962819814682,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,894635,0,0.16764038801193237,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,912826,0,0.3162209093570709,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,937262,0,0.30430924892425537,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,969632,0,0.1279471069574356,0,0.5,22,mean
+residual_mlp,Residual Neural Network,mean,test,val,998165,0,0.19414851069450378,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,129630,0,0.050605277902861595,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,174737,0,0.03148026749989699,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,179879,0,0.015260357833564359,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,249673,0,0.03979648578785245,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,291813,0,0.020210774630539437,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,342938,0,0.02440906485562139,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,380867,1,0.22927480222434343,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,396371,0,0.014350947762835064,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,453090,0,0.014715954598494318,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,458934,0,0.19001121134738852,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,484712,0,0.016894789929670202,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,535677,0,0.012893309798014181,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,544851,0,0.015526918956543215,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,556982,0,0.02440906485562139,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,656551,0,0.04447518781549096,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,657544,0,0.027330224263233983,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,687954,0,0.2335104546061377,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,710837,1,0.5470077756363009,1,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,726260,0,0.01486432273309133,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,7388,0,0.5462558690725269,1,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,751293,0,0.01486432273309133,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,753517,0,0.014197072436853623,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,775174,0,0.014456741105374179,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,777910,0,0.01560919954577985,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,833061,0,0.013363988286139182,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,865722,0,0.5462558690725269,1,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,884551,1,0.022641163110904746,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,894635,0,0.039912585866139945,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,912826,0,0.041179790244049684,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,937262,0,0.210644604345195,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,969632,0,0.03979648578785245,0,0.5,22,mean
+hist_gradient_boosting,Hist Gradient Boosting,median,test,val,998165,0,0.012931981074821615,0,0.5,22,mean
+mlp,Neural Network,median,test,val,129630,0,0.49805518984794617,0,0.5,22,mean
+mlp,Neural Network,median,test,val,174737,0,0.5189050436019897,1,0.5,22,mean
+mlp,Neural Network,median,test,val,179879,0,0.4898420572280884,0,0.5,22,mean
+mlp,Neural Network,median,test,val,249673,0,0.49826446175575256,0,0.5,22,mean
+mlp,Neural Network,median,test,val,291813,0,0.4917796552181244,0,0.5,22,mean
+mlp,Neural Network,median,test,val,342938,0,0.49220946431159973,0,0.5,22,mean
+mlp,Neural Network,median,test,val,380867,1,0.5143550038337708,1,0.5,22,mean
+mlp,Neural Network,median,test,val,396371,0,0.49612438678741455,0,0.5,22,mean
+mlp,Neural Network,median,test,val,453090,0,0.5046558380126953,1,0.5,22,mean
+mlp,Neural Network,median,test,val,458934,0,0.4870389997959137,0,0.5,22,mean
+mlp,Neural Network,median,test,val,484712,0,0.510594367980957,1,0.5,22,mean
+mlp,Neural Network,median,test,val,535677,0,0.49418357014656067,0,0.5,22,mean
+mlp,Neural Network,median,test,val,544851,0,0.5052359104156494,1,0.5,22,mean
+mlp,Neural Network,median,test,val,556982,0,0.4986737370491028,0,0.5,22,mean
+mlp,Neural Network,median,test,val,656551,0,0.4985252022743225,0,0.5,22,mean
+mlp,Neural Network,median,test,val,657544,0,0.5036336779594421,1,0.5,22,mean
+mlp,Neural Network,median,test,val,687954,0,0.49553635716438293,0,0.5,22,mean
+mlp,Neural Network,median,test,val,710837,1,0.5059196949005127,1,0.5,22,mean
+mlp,Neural Network,median,test,val,726260,0,0.5031914710998535,1,0.5,22,mean
+mlp,Neural Network,median,test,val,7388,0,0.4925917088985443,0,0.5,22,mean
+mlp,Neural Network,median,test,val,751293,0,0.5115243792533875,1,0.5,22,mean
+mlp,Neural Network,median,test,val,753517,0,0.5128822326660156,1,0.5,22,mean
+mlp,Neural Network,median,test,val,775174,0,0.504729688167572,1,0.5,22,mean
+mlp,Neural Network,median,test,val,777910,0,0.49847662448883057,0,0.5,22,mean
+mlp,Neural Network,median,test,val,833061,0,0.5074615478515625,1,0.5,22,mean
+mlp,Neural Network,median,test,val,865722,0,0.49840247631073,0,0.5,22,mean
+mlp,Neural Network,median,test,val,884551,1,0.49598896503448486,0,0.5,22,mean
+mlp,Neural Network,median,test,val,894635,0,0.4917881190776825,0,0.5,22,mean
+mlp,Neural Network,median,test,val,912826,0,0.49079078435897827,0,0.5,22,mean
+mlp,Neural Network,median,test,val,937262,0,0.499687522649765,0,0.5,22,mean
+mlp,Neural Network,median,test,val,969632,0,0.5001806020736694,1,0.5,22,mean
+mlp,Neural Network,median,test,val,998165,0,0.4937930703163147,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,129630,0,0.3832258880138397,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,174737,0,0.7894888520240784,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,179879,0,0.681535542011261,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,249673,0,0.5051884055137634,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,291813,0,0.4764325022697449,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,342938,0,0.5160560011863708,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,380867,1,0.4291391670703888,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,396371,0,0.4507606029510498,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,453090,0,0.5146084427833557,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,458934,0,0.2856106460094452,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,484712,0,0.5148336887359619,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,535677,0,0.5358830094337463,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,544851,0,0.6255830526351929,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,556982,0,0.6048722863197327,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,656551,0,0.4741736650466919,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,657544,0,0.3812345564365387,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,687954,0,0.4866407513618469,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,710837,1,0.4844377934932709,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,726260,0,0.6187268495559692,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,7388,0,0.3983842730522156,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,751293,0,0.8286254405975342,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,753517,0,0.5195775628089905,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,775174,0,0.533577024936676,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,777910,0,0.6156436800956726,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,833061,0,0.7797788381576538,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,865722,0,0.4025598466396332,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,884551,1,0.6364942789077759,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,894635,0,0.8112221956253052,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,912826,0,0.47812333703041077,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,937262,0,0.5085947513580322,1,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,969632,0,0.4312306046485901,0,0.5,22,mean
+wide_deep_mlp,Wide+Deep Neural Network,min,test,val,998165,0,0.4978639781475067,0,0.5,22,mean

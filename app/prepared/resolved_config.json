@@ -1,0 +1,338 @@
+{
+  "analysis": {
+    "final": {
+      "evaluate_all_models_at_locked_k": true,
+      "refit_on_train_val": true
+    },
+    "mode": "confirmatory",
+    "selection_split": null
+  },
+  "cluster": {
+    "aggregation": "mean",
+    "aggregation_methods": [
+      "mean",
+      "pca",
+      "max",
+      "min",
+      "std",
+      "median",
+      "sum"
+    ],
+    "exploration_k_values": [
+      5,
+      10,
+      15,
+      20,
+      50,
+      70,
+      90,
+      110,
+      130
+    ],
+    "fine_tune": {
+      "center_k": null,
+      "cluster_aggregation": "mean",
+      "enabled": true,
+      "include_k": [],
+      "max_k": 130,
+      "metric": "roc_auc",
+      "min_k": 5,
+      "model": "mlp",
+      "selection": {
+        "balanced": {
+          "accuracy_near_top_delta": 0.02,
+          "f1_near_top_delta": 0.02,
+          "min_performance_votes": 2,
+          "prefer_smallest_k": true,
+          "roc_auc_near_top_delta": 0.015,
+          "stability_metric": "stability_ari_mean",
+          "stability_near_top_delta": 0.03,
+          "weights": {
+            "accuracy": 0.05,
+            "f1": 0.1,
+            "roc_auc": 0.53,
+            "small_k": 0.02,
+            "stability": 0.3
+          }
+        },
+        "lock_strategy": "balanced_stability_performance",
+        "near_top_delta": 0.03,
+        "override_k": null,
+        "prefer_smallest_k": false,
+        "preferred_k_max": 40,
+        "preferred_k_min": 8,
+        "strategy": "small_k_near_top",
+        "validity": {
+          "near_top_delta": 0.01,
+          "stability": {
+            "n_bootstrap": 8,
+            "sample_fraction": 0.8
+          },
+          "weights": {
+            "elbow": 0.1,
+            "performance": 0.6,
+            "silhouette": 0.05,
+            "small_k": 0.05,
+            "stability": 0.2
+          }
+        }
+      },
+      "selection_model": {
+        "dl_models": [
+          "mlp",
+          "residual_mlp",
+          "wide_deep_mlp"
+        ],
+        "fixed": "mlp",
+        "policy": "best_available_prefer_dl",
+        "preferred_order": [
+          "mlp",
+          "residual_mlp",
+          "wide_deep_mlp",
+          "random_forest",
+          "extra_trees",
+          "logistic_regression",
+          "elastic_net_logistic",
+          "hist_gradient_boosting",
+          "svc_rbf"
+        ]
+      },
+      "window": 2
+    },
+    "linkage": "ward",
+    "search_models": [
+      "mlp",
+      "residual_mlp",
+      "wide_deep_mlp"
+    ]
+  },
+  "columns": {
+    "participant_id": "participant_id",
+    "session_id": "session_id",
+    "task_name": "task_name",
+    "transcription": "transcription"
+  },
+  "feature_selection": {
+    "exclude_columns": [
+      "participant_id",
+      "session_id",
+      "task_name",
+      "transcription",
+      "label",
+      "pd_label",
+      "control_label"
+    ]
+  },
+  "files": {
+    "phenotype_tsv": "phenotype.tsv",
+    "static_features_tsv": "static_features.tsv"
+  },
+  "hyperparameters": {
+    "elastic_net_logistic": {
+      "alpha": 0.0003,
+      "class_weight": "balanced",
+      "l1_ratio": 0.2,
+      "loss": "log_loss",
+      "max_iter": 2500,
+      "penalty": "elasticnet",
+      "tol": 0.0001
+    },
+    "extra_trees": {
+      "class_weight": "balanced",
+      "max_depth": 12,
+      "max_features": "sqrt",
+      "min_samples_leaf": 5,
+      "min_samples_split": 10,
+      "n_estimators": 500,
+      "n_jobs": -1
+    },
+    "hist_gradient_boosting": {
+      "early_stopping": true,
+      "l2_regularization": 0.01,
+      "learning_rate": 0.05,
+      "max_iter": 300,
+      "max_leaf_nodes": 31,
+      "min_samples_leaf": 20,
+      "n_iter_no_change": 15,
+      "validation_fraction": 0.2
+    },
+    "logistic_regression": {
+      "C": 1.0,
+      "class_weight": "balanced",
+      "max_iter": 1000,
+      "penalty": "l2",
+      "solver": "lbfgs"
+    },
+    "mlp": {
+      "backend": "pytorch",
+      "batch_size": 128,
+      "device": "auto",
+      "dropout_rate": 0.3,
+      "epochs": 40,
+      "gradient_clip": 0.5,
+      "hidden_dims": [
+        256,
+        128,
+        64
+      ],
+      "label_smoothing": 0.1,
+      "lr": 0.0006,
+      "min_delta": 0.0001,
+      "noise_std": 0.01,
+      "patience": 6,
+      "pct_start": 0.2,
+      "validation_fraction": 0.2,
+      "weight_decay": 0.008
+    },
+    "random_forest": {
+      "class_weight": "balanced",
+      "max_depth": 10,
+      "max_features": "sqrt",
+      "min_samples_leaf": 10,
+      "min_samples_split": 20,
+      "n_estimators": 150,
+      "n_jobs": -1
+    },
+    "residual_mlp": {
+      "batch_size": 128,
+      "device": "auto",
+      "dropout_rate": 0.25,
+      "epochs": 50,
+      "gradient_clip": 1.0,
+      "hidden_dims": [
+        256,
+        128,
+        64
+      ],
+      "label_smoothing": 0.05,
+      "lr": 0.0005,
+      "min_delta": 0.0001,
+      "noise_std": 0.01,
+      "patience": 8,
+      "pct_start": 0.2,
+      "use_batch_norm": true,
+      "validation_fraction": 0.2,
+      "weight_decay": 0.01
+    },
+    "svc_rbf": {
+      "C": 2.0,
+      "class_weight": "balanced",
+      "gamma": "scale",
+      "kernel": "rbf",
+      "probability": true
+    },
+    "wide_deep_mlp": {
+      "batch_size": 128,
+      "device": "auto",
+      "dropout_rate": 0.2,
+      "epochs": 45,
+      "gradient_clip": 0.8,
+      "hidden_dims": [
+        192,
+        96,
+        48
+      ],
+      "label_smoothing": 0.05,
+      "lr": 0.0007,
+      "min_delta": 0.0001,
+      "noise_std": 0.008,
+      "patience": 7,
+      "pct_start": 0.2,
+      "use_batch_norm": true,
+      "validation_fraction": 0.2,
+      "weight_decay": 0.005
+    }
+  },
+  "labeling": {
+    "control_column_candidates": [
+      "is_control_participant",
+      "session_is_control_participant",
+      "control",
+      "healthy"
+    ],
+    "control_values": [
+      "yes",
+      "checked",
+      "true",
+      "1"
+    ],
+    "include_case_control_only": true,
+    "negative_class_name": "control",
+    "positive_class_name": "parkinsons",
+    "positive_column_candidates": [
+      "parkinsons",
+      "parkinson"
+    ],
+    "positive_values": [
+      "checked",
+      "yes",
+      "true",
+      "1"
+    ]
+  },
+  "modeling": {
+    "metrics": [
+      "roc_auc",
+      "accuracy",
+      "f1",
+      "precision",
+      "recall"
+    ],
+    "models": [
+      "logistic_regression",
+      "elastic_net_logistic",
+      "random_forest",
+      "extra_trees",
+      "hist_gradient_boosting",
+      "svc_rbf",
+      "mlp",
+      "residual_mlp",
+      "wide_deep_mlp"
+    ],
+    "patient_aggregation_methods": [
+      "mean",
+      "median",
+      "max",
+      "min",
+      "std"
+    ],
+    "patient_selection_metric": "roc_auc",
+    "split": {
+      "balance": {
+        "enabled": true,
+        "trials": 64
+      },
+      "test_fraction": 0.2,
+      "validation_fraction": 0.2
+    },
+    "threshold": 0.5
+  },
+  "paths": {
+    "data_root": "raw_data",
+    "outputs_root": "outputs"
+  },
+  "phenotype": {
+    "name": "parkinsons"
+  },
+  "project": {
+    "name": "voice-screening",
+    "random_seed": 42
+  },
+  "reporting": {
+    "cluster_validation": {
+      "n_bootstrap": 8,
+      "sample_fraction": 0.8
+    },
+    "permutation_importance_iterations": 20,
+    "progressive_selection": {
+      "cluster_ratio": 0.8,
+      "importance_iterations": 5,
+      "min_features": 10,
+      "removal_percentage": 0.1,
+      "use_clustering": true
+    }
+  },
+  "reproducibility": {
+    "torch_deterministic": false
+  }
+}

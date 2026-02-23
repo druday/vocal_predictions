@@ -1,0 +1,6 @@
+search_stage,evaluation_split,n_clusters,aggregation,model,model_display,estimator_class,n_features,threshold,accuracy,roc_auc,f1,precision,recall,best_epoch
+fine_tune,val,18,mean,wide_deep_mlp,Wide+Deep Neural Network,TorchWideDeepNetClassifier,18,0.5,0.8804780876494024,0.8494135988378273,0.5454545454545454,0.7578947368421053,0.4260355029585799,19
+fine_tune,val,19,mean,wide_deep_mlp,Wide+Deep Neural Network,TorchWideDeepNetClassifier,19,0.5,0.899402390438247,0.935194699358679,0.6327272727272727,0.8207547169811321,0.514792899408284,13
+fine_tune,val,20,mean,wide_deep_mlp,Wide+Deep Neural Network,TorchWideDeepNetClassifier,20,0.5,0.8944223107569721,0.935577365978103,0.6214285714285714,0.7837837837837838,0.514792899408284,19
+fine_tune,val,21,mean,wide_deep_mlp,Wide+Deep Neural Network,TorchWideDeepNetClassifier,21,0.5,0.9033864541832669,0.9358324770577188,0.6734006734006734,0.78125,0.591715976331361,15
+fine_tune,val,22,mean,wide_deep_mlp,Wide+Deep Neural Network,TorchWideDeepNetClassifier,22,0.5,0.9073705179282868,0.947376253410339,0.6804123711340206,0.8114754098360656,0.5857988165680473,18

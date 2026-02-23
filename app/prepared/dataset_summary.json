@@ -1,0 +1,29 @@
+{
+  "class_counts": {
+    "0": 5079,
+    "1": 887
+  },
+  "class_counts_named": {
+    "control": 5079,
+    "parkinsons": 887
+  },
+  "n_features": 131,
+  "n_participants": 156,
+  "n_records": 5966,
+  "negative_class_name": "control",
+  "participant_class_counts": {
+    "0": 142,
+    "1": 14
+  },
+  "participant_class_counts_named": {
+    "control": 142,
+    "parkinsons": 14
+  },
+  "positive_class_name": "parkinsons",
+  "recordings_per_participant": {
+    "max": 159.0,
+    "mean": 38.243589743589745,
+    "median": 36.0,
+    "min": 13.0
+  }
+}

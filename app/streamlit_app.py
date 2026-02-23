@@ -383,7 +383,12 @@ def main() -> None:
     st.caption("All other deliverables are saved under this repository's outputs folder.")
 
     phenotypes = _available_phenotypes()
-    default_index = phenotypes.index("parkinsons") if "parkinsons" in phenotypes else 0
+    if "probable_parkinsonian" in phenotypes:
+        default_index = phenotypes.index("probable_parkinsonian")
+    elif "parkinsons" in phenotypes:
+        default_index = phenotypes.index("parkinsons")
+    else:
+        default_index = 0
 
     col1, col2 = st.columns(2)
     with col1:
