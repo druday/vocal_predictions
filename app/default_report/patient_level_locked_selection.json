@@ -1,18 +1,18 @@
 {
   "analysis_mode": "confirmatory",
   "best_cluster_aggregation": "mean",
-  "best_cluster_k": 22,
+  "best_cluster_k": 16,
   "refit_on_train_val": true,
   "selected_aggregation_by_model": {
     "elastic_net_logistic": "mean",
     "extra_trees": "max",
-    "hist_gradient_boosting": "median",
+    "hist_gradient_boosting": "max",
     "logistic_regression": "mean",
-    "mlp": "median",
-    "random_forest": "mean",
-    "residual_mlp": "mean",
+    "mlp": "std",
+    "random_forest": "median",
+    "residual_mlp": "std",
     "svc_rbf": "std",
-    "wide_deep_mlp": "min"
+    "wide_deep_mlp": "max"
   },
   "selection_metric": "roc_auc",
   "selection_split": "val"

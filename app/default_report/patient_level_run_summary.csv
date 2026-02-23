@@ -1,2 +1,2 @@
 analysis_mode,selection_split,selection_metric,refit_on_train_val,best_cluster_k,best_cluster_aggregation,patient_aggregation_methods,models,n_selection_rows,n_final_rows
-confirmatory,val,roc_auc,True,22,mean,"['mean', 'median', 'max', 'min', 'std']","['logistic_regression', 'elastic_net_logistic', 'random_forest', 'extra_trees', 'hist_gradient_boosting', 'svc_rbf', 'mlp', 'residual_mlp', 'wide_deep_mlp']",45,9
+confirmatory,val,roc_auc,True,16,mean,"['mean', 'median', 'max', 'min', 'std']","['logistic_regression', 'elastic_net_logistic', 'random_forest', 'extra_trees', 'hist_gradient_boosting', 'svc_rbf', 'mlp', 'residual_mlp', 'wide_deep_mlp']",45,9
