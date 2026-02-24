@@ -1,2 +1,2 @@
 model,model_display,estimator_class,patient_aggregation,evaluation_split,selection_split,selection_metric,selection_metric_value,n_features,threshold,cluster_k,cluster_aggregation,n_train_patients,n_val_patients,n_test_patients,accuracy,roc_auc,f1,precision,recall,best_epoch
-extra_trees,Extra Trees,ExtraTreesClassifier,max,test,val,roc_auc,1.0,22,0.5,22,mean,124,0,32,0.96875,1.0,0.8,1.0,0.6666666666666666,
+elastic_net_logistic,Elastic-Net Logistic,SGDClassifier,std,test,val,roc_auc,0.857707509881423,17,0.5,17,mean,170,0,43,0.8372093023255814,0.9482758620689655,0.7878787878787878,0.6842105263157895,0.9285714285714286,

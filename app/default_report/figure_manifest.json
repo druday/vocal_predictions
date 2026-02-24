@@ -1,8 +1,8 @@
 {
   "analysis_mode": "confirmatory",
-  "figure_count": 75,
-  "phenotype": "parkinsons",
-  "run_id": "run20260222-180518",
+  "figure_count": 74,
+  "phenotype": "probable_parkinsonian",
+  "run_id": "run20260222-205839",
   "sections": {
     "acoustic": "reports/figures/01_acoustic_features",
     "cluster_decision": "reports/figures/02_feature_clustering_decision",

@@ -1,2 +1,2 @@
 search_stage,evaluation_split,n_clusters,aggregation,model,model_display,estimator_class,n_features,threshold,accuracy,roc_auc,f1,precision,recall,best_epoch,contender_rank
-coarse,val,20,mean,wide_deep_mlp,Wide+Deep Neural Network,TorchWideDeepNetClassifier,20,0.5,0.897410358565737,0.9356269709102506,0.643598615916955,0.775,0.5502958579881657,24,1
+coarse,val,15,mean,wide_deep_mlp,Wide+Deep Neural Network,TorchWideDeepNetClassifier,15,0.5,0.711705685618729,0.7598378301587823,0.5998142989786444,0.7546728971962616,0.49768875192604,14,1
