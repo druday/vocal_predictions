@@ -63,6 +63,12 @@ python -m pip install -e .[ui]
 make pipeline PHENOTYPE=parkinsons RUN_ID=run001
 ```
 
+If you run `make` from outside the repository and the checkout path contains spaces, quote the `-C` argument:
+```bash
+make -C "/path/with spaces/vocal_predictions" pipeline PHENOTYPE=parkinsons RUN_ID=run001
+```
+An unquoted path such as `make -C /path/with spaces/vocal_predictions ...` will be split by the shell and fail before the repository Makefile runs.
+
 PyTorch DL methods include:
 - `mlp` (`RegularizedHybridNet`)
 - `residual_mlp` (residual tabular MLP)

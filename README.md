@@ -25,6 +25,17 @@ make frontend
 6. Enter PhysioNet username/password on first launch (not stored to disk).
 7. Keep `Download static files before running pipeline` checked and click `Run Pipeline`.
 
+If you launch `make` from another directory and this repository path contains spaces, quote the `-C` path:
+```bash
+make -C "/path/with spaces/vocal_predictions" frontend
+```
+Unquoted `make -C /path/with spaces/vocal_predictions ...` will fail with `No such file or directory`.
+
+If your network injects a local proxy and the download logs mention `Proxy tunneling failed` or `127.0.0.1:<port>`, relaunch with:
+```bash
+PHYSIONET_NO_PROXY=1 make frontend
+```
+
 ## What users will see
 
 - Main user output: compiled report (`manuscript_report.html`) in the frontend.

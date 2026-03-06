@@ -25,10 +25,22 @@ Static-only download (recommended for this repository):
 PHYSIONET_USER=user_name make download_data_static
 ```
 
+If your shell or VPN injects a proxy and you see errors like `Connecting to 127.0.0.1:56801` or `Proxy tunneling failed`, bypass the proxy for PhysioNet:
+```bash
+PHYSIONET_USER=user_name PHYSIONET_NO_PROXY=1 make download_data_static
+```
+You can also set `NO_PROXY=physionet.org` if direct access is allowed on your network.
+
 ## 3. Run full pipeline (default Parkinson's)
 ```bash
 make pipeline PHENOTYPE=parkinsons RUN_ID=run001
 ```
+
+If you invoke the repository from another working directory and the repo path contains spaces, quote the `make -C` argument:
+```bash
+make -C "/path/with spaces/vocal_predictions" pipeline PHENOTYPE=parkinsons RUN_ID=run001
+```
+Unquoted paths are split by the shell before `make` sees them, which produces errors such as `make: /path/with: No such file or directory`.
 
 PyTorch DL paths include:
 - `mlp` (`RegularizedHybridNet`)
